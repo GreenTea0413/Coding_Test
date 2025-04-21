@@ -3,15 +3,3 @@
 ## 기초부터 하나하나 다 해보기
 - 하루에 한개이상은 무조건 하기
 - 안할 시 게임, 축구, 기타 금지
-
-<!---LeetCode Topics Start-->
-# LeetCode Topics
-## Array
-|  |
-| ------- |
-| [0001-two-sum](https://github.com/GreenTea0413/Coding_Test/tree/master/0001-two-sum) |
-## Hash Table
-|  |
-| ------- |
-| [0001-two-sum](https://github.com/GreenTea0413/Coding_Test/tree/master/0001-two-sum) |
-<!---LeetCode Topics End-->
