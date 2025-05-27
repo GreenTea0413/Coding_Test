@@ -1,28 +1,27 @@
 import java.util.*;
 
 class Solution {
-    public int answer = 101;
-    public int bfs(List<Integer>[] graph, boolean[] visited, int start){
-        Queue<Integer> queue = new LinkedList<Integer>();
-        visited[start] = true;
+    public int bfs(boolean[] visited,List<Integer>[] graph, int start){
+        Queue<Integer> queue = new LinkedList<>();
+        visited[start]  = true;
         queue.add(start);
         int count = 1;
         
         while(!queue.isEmpty()){
-            int x = queue.poll();
-            for(int next : graph[x]){
+            int num = queue.poll();
+            
+            for(int next : graph[num]){
                 if(!visited[next]){
+                    count ++;
                     visited[next] = true;
-                    count++;
                     queue.add(next);
                 }
             }
         }
         return count;
     }
-    
     public int solution(int n, int[][] wires) {
-        // 그래프 생성~
+        int answer = 101;
         List<Integer>[] graph = new ArrayList[n + 1];
         for(int i = 0; i < n + 1; i ++){
             graph[i] = new ArrayList<>();
@@ -32,7 +31,7 @@ class Solution {
             graph[w[0]].add(w[1]);
             graph[w[1]].add(w[0]);
         }
-        // 간선 만들기 끝
+        
         for(int[] w : wires){
             int a = w[0];
             int b = w[1];
@@ -40,14 +39,13 @@ class Solution {
             graph[a].remove(Integer.valueOf(b));
             graph[b].remove(Integer.valueOf(a));
             
-            // 간선 지우고 이제 얼마나 연결 되어있는 지
             boolean[] visited = new boolean[n + 1];
-            int count = bfs(graph, visited, a);
+            int count = bfs(visited, graph, a);
+            if(count == -1) return 0;
             int diff = Math.abs(n - 2 * count);
+            answer = Math.min(answer , diff);
             
-            answer = Math.min(answer, diff);
-            
-            graph[a].add(b); 
+            graph[a].add(b);
             graph[b].add(a);
         }
         return answer;
