@@ -1,31 +1,33 @@
 import java.util.*;
 
 class Solution {
-    int answer = 101;
-    
-    int bfs(List<Integer>[] graph, boolean[] visited, int start){
-        Queue <Integer> queue = new LinkedList<Integer>();
+    int bfs(List<Integer>[] graph, boolean[] v, int start){
+        Queue<Integer> queue = new LinkedList<>();
         
-        visited[start] = true;
         queue.add(start);
-        int num = 1;
+        v[start] = true;
+        int count = 1;
+        
         while(!queue.isEmpty()){
-            int s = queue.poll();
+            int n = queue.poll();
             
-            for(int next : graph[s]){
-                if(!visited[next]){
+            for(int next : graph[n]){
+                if(!v[next]){
+                    v[next] = true;
+                    count++;
                     queue.add(next);
-                    visited[next] = true;
-                    num ++;
                 }
             }
         }
-        return num;
+        return count;
     }
     
+    
     public int solution(int n, int[][] wires) {
+        int answer = 101;
+        
         List<Integer>[] graph = new ArrayList[n + 1];
-        for(int i = 0 ; i < n + 1; i ++){
+        for(int i = 0 ; i < n + 1; i++){
             graph[i] = new ArrayList<>();
         }
         
@@ -41,10 +43,8 @@ class Solution {
             graph[a].remove(Integer.valueOf(b));
             graph[b].remove(Integer.valueOf(a));
             
-            
-            boolean[] visited = new boolean[n + 1];
-            
-            int count = bfs(graph,visited,a);
+            boolean[] v = new boolean[n + 1];
+            int count = bfs(graph,v,a);
             int diff = Math.abs(n - 2 * count);
             
             answer = Math.min(answer, diff);
