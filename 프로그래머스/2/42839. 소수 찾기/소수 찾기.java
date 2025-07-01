@@ -1,7 +1,7 @@
 import java.util.*;
 
 class Solution {
-    Set<Integer> nSet = new HashSet<>();
+    Set<Integer>nSet = new HashSet<>();
     boolean[] v;
     public int solution(String numbers) {
         v = new boolean[numbers.length()];
@@ -10,10 +10,9 @@ class Solution {
         int sum = 0;
         for(int num : nSet){
             if(isPrime(num)){
-                sum ++;
+                sum++;
             }
         }
-        
         return sum;
     }
     
@@ -31,9 +30,11 @@ class Solution {
     
     public boolean isPrime(int n){
         if(n < 2) return false;
+        
         for(int i = 2; i <= Math.sqrt(n); i++){
             if(n % i == 0) return false;
         }
+        
         return true;
     }
 }
