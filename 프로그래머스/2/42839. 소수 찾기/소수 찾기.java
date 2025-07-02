@@ -1,44 +1,38 @@
 import java.util.*;
-
 class Solution {
     Set<Integer> nSet = new HashSet<>();
     boolean[] v;
     public int solution(String numbers) {
         v = new boolean[numbers.length()];
-        
         dfs("", numbers);
         
         int answer = 0;
         for(int num : nSet){
-            if(isPrime(num)){
+            if(isPrime(num))
                 answer ++;
-            }
         }
-        
         return answer;
     }
     
-    public void dfs(String cur, String num){
+    public void dfs(String cur, String numbers){
         if(!cur.equals("")) nSet.add(Integer.parseInt(cur));
         
-        for(int i = 0; i < num.length(); i++){
+        for(int i = 0; i < numbers.length(); i++){
             if(!v[i]){
                 v[i] = true;
-                dfs(cur + num.charAt(i), num);
+                dfs(cur + numbers.charAt(i), numbers);
                 v[i] = false;
             }
         }
     }
     
-    
-    public boolean isPrime(int num){
-        if(num < 2) return false;
+    public boolean isPrime(int n){
+        if(n < 2) return false;
         
-        for(int i = 2; i <= Math.sqrt(num); i++)
+        for(int i = 2; i <=Math.sqrt(n); i++)
         {
-            if(num % i == 0) return false;
+            if(n % i == 0)  return false;
         }
-        
         return true;
-    }
+     }
 }
