@@ -1,11 +1,10 @@
 class Solution {
     public int solution(int[] numbers, int target) {
-        
-        return dfs(numbers, 0, target, 0);
+        return dfs(numbers, 0, target, 0); 
     }
     
     public int dfs(int[] numbers, int count, int target, int cur){
-        if(numbers.length == count){
+        if(count == numbers.length){
             return (cur == target) ? 1 : 0;
         }
         
