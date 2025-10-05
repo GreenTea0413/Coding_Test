@@ -12,10 +12,7 @@ var coinChange = function(coins, amount) {
     visited[amount] = true
 
     while(queue.length > 0){
-        const cur = queue.shift()
-        const remainAmount = cur[0]
-        const count = cur[1]
-
+        const [remainAmount, count] = queue.shift()
         if(remainAmount == 0) return count
 
         for(const coin of coins){
