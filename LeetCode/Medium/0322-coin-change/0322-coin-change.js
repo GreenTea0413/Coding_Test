@@ -11,8 +11,10 @@ var coinChange = function(coins, amount) {
     const visited = Array.from({length: amount + 1}, () => false)
     visited[amount] = true
 
-    while(queue.length > 0){
-        const [remainAmount, count] = queue.shift()
+    let head = 0
+
+    while (head < queue.length) {
+        const [remainAmount, count] = queue[head++];
         if(remainAmount == 0) return count
 
         for(const coin of coins){
