@@ -5,7 +5,6 @@
  */
 var coinChange = function(coins, amount) {
     if(amount === 0) return 0
-    coins.sort((a,b) => b-a)
     
     const len = coins.length;
     const queue = [[amount, 0]]
