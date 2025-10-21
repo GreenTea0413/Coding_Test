@@ -12,7 +12,10 @@ var maximumProduct = function(nums) {
         answer = Math.max(arr[0] * arr[1] * arr[len-1], arr[len-1] * arr[len-2] * arr[len-3])
     }
     else if(arr[0] >= 0) {
-        answer = arr[len-1] * arr[len-2] * arr[len - 3]
+        answer = arr[len-1] * arr[len-2] * arr[len-3]
+    }
+    else{
+        answer = arr[len-1] * arr[len-2] * arr[len-3]
     }
 
     return answer
