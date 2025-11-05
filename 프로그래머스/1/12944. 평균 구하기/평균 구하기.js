@@ -1,8 +1,9 @@
 function solution(arr) {
     var answer = 0;
     
-    arr.forEach((num) =>{
-       answer += num; 
-    });
-    return answer / arr.length;
+    for(const a of arr){
+        answer += a
+    }
+    
+    return answer / arr.length
 }
