@@ -1,15 +1,13 @@
 function solution(sizes) {
-    var answer = 0;
-    let maxW = 0;
-    let maxH = 0;
-    for(let[w,h] of sizes){
-        const wLen = Math.max(w,h);
-        const hLen = Math.min(w,h);
-        
-        if(maxW < wLen) maxW = wLen;
-        if(maxH < hLen) maxH = hLen;
-    }
+    var xLen = 0;
+    var yLen = 0;
     
-    answer = maxW * maxH;
-    return answer;
+    for(const [w,h] of sizes){
+        var max = Math.max(w,h)
+        var min = Math.min(w,h)
+        
+        if(max > xLen) xLen = max
+        if(min > yLen) yLen = min
+    }
+    return xLen * yLen; 
 }
