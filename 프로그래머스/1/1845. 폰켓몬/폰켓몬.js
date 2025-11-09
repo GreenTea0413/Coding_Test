@@ -1,6 +1,11 @@
 function solution(nums) {
-    const arr = new Set(nums);
-    const n = nums.length / 2;
+    var map = new Map()
+    var answer = nums.length / 2
+    for(const n of nums){
+        map.set(n, map.get(n) + 1 || 1)
+    }
+    if(map.size < answer) return map.size
     
-    return Math.min(arr.size, n);
+    return answer
+    
 }
