@@ -1,17 +1,17 @@
 function solution(participant, completion) {
-    var map = new Map();
+    var map = new Map()
     
-    for (const p of participant){
-        map.set(p, (map.get(p) | 0) + 1)
+    for(const name of participant){
+        map.set(name, map.get(name) + 1 || 1)
     }
     
-    for (const c of completion){
-        map.set(c, (map.get(c)) - 1)
+    for(const name of completion){
+        map.set(name, map.get(name) - 1)
     }
-    
-    for(const [name, count] of map){
-        if(count > 0){
-            return name
+
+    for(const [a, b] of map){
+        if(b > 0){
+            return a
         }
     }
 }
