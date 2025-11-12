@@ -1,15 +1,15 @@
 def solution(participant, completion):
-    answer =''
-    graph = {}
-    # dict를 사용해서 해당 이름을 가진사람이 몇명인지 하고 만약에 없으면 우선 1
-    for i in participant :
-        if i in graph : graph[i] += 1
-        else : graph[i] = 1
+    answer = ''
+    arr = {}
     
-    for j in completion :
-        graph[j] -= 1
+    for p in participant :
+        arr[p] = arr.get(p, 0) + 1
+    for c in completion :
+        arr[c] -= 1
     
-    for i in graph :
-        if(graph[i] == 1) :
-            answer = i
+    for name, count in arr.items() :
+        if count > 0 :
+            return name
+        
+    
     return answer
