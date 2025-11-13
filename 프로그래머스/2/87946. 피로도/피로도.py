@@ -1,18 +1,17 @@
-from itertools import permutations
-
 def solution(k, dungeons):
     answer = 0
-    arr = []
-    for words in permutations(dungeons) :
-        # 모든 경우의 수 돌기 k는 계속 초기화 해줄 것
-        life = k
-        count = 0
-        # ex) [[80,20], [50,40], [30,10]]
-        for word in words :
-            if word[0] <= life : 
-                life -= word[1]
-                count += 1
-        arr.append(count)
+    l = len(dungeons)
+    visited = [False] * l
     
-    answer = max(arr)
-    return answer
+    def dfs(hp, c) :
+        nonlocal answer 
+        answer= max(answer, c)
+        for i in range(l) :
+            if hp >= dungeons[i][0] and visited[i] == False :
+                visited[i] = True
+                dfs(hp - dungeons[i][1], c + 1)
+                visited[i] = False
+        
+
+    dfs(k, 0)
+    return answer   
