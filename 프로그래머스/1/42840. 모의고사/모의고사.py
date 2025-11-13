@@ -1,25 +1,21 @@
 def solution(answers):
     answer = []
-    # 1, 2, 3, 4, 5
-    # 2, 1, 2, 3, 2, 4, 2, 5
-    # 3, 3, 1, 1, 2, 2, 4, 4, 5, 5
-    arr = list(map(int,answers))
-    a = [1,2,3,4,5]
-    b = [2,1,2,3,2,4,2,5]
-    c = [3,3,1,1,2,2,4,4,5,5]
+    count = {1 : 0, 2 : 0, 3 : 0}
+    n1 = [1,2,3,4,5]
+    n2 = [2,1,2,3,2,4,2,5]
+    n3 = [3,3,1,1,2,2,4,4,5,5]
     
-    count = [0,0,0]
-    for i in range(len(arr)) :
-        if(arr[i] == a[i % 5]) :
-            count[0] += 1
-        if(arr[i] == b[i % 8]) :
-            count[1] +=1
-        if(arr[i] == c[i % 10]) :
-            count[2] += 1
+    for i in range (len(answers)) :
+        if(n1[i % 5] == answers[i]) : count[1] +=1
+        if(n2[i % 8] == answers[i]) : count[2] +=1
+        if(n3[i % 10] == answers[i]) : count[3] +=1
     
-    max_count = max(count)
-    for i in range(3) :
-        if(max_count == count[i]) :
-            answer.append(i+1)
-        
+    
+    arr = sorted(count.items(), key = lambda x : x[1], reverse=True)
+    m = arr[0][1]
+    
+    for i, j in arr :
+        if j == m :
+            answer.append(i)
+
     return answer
