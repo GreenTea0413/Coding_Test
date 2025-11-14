@@ -1,28 +1,27 @@
-from collections import deque
-
-def check(w1, w2) :
-    count = 0
-    for a, b in zip(w1, w2) :
-        if(a != b) :
-            count += 1
+def dfs(begin, target, words, count, visited) :
+    if(begin == target) : 
+        return count
     
-    if(count == 1) :
-        return 1
-    else :
-        return 0
+    answer = len(words) + 1
+    for i in range(len(words)) :
+        c = 0
+        if visited[i] == False :
+            for l in range(len(words[i])) :
+                if begin[l] != words[i][l] :
+                    c += 1
 
-def solution(begin, target, words):    
-    queue = deque([(begin,0)])
-    visit = set()
-    while queue :
-        current, count = queue.popleft()
-        
-        if(current == target) :
-            return count
-        
-        for word in words :
-            if(word not in visit and check(word,current) == 1) :
-                queue.append((word, count + 1))
-                visit.add(word)
-                
-    return 0
+            if c == 1 :
+                visited[i] = True
+                result = dfs(words[i], target, words, count + 1, visited)
+                visited[i] = False
+                if result != 0 : 
+                    answer = min(answer, result)
+    
+    if answer == len(words) + 1 :
+        return 0
+    return answer
+
+def solution(begin, target, words):
+    visited = [False]  * len(words)
+    
+    return dfs(begin, target, words, 0, visited)
