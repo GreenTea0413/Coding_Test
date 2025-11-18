@@ -1,19 +1,10 @@
-t = int(input())
+from collections import Counter
 
-for test_case in range(1, t + 1):
-    num = input()
+n = int(input())
+
+for i in range(n) :
+    n2 = int(input())
     arr = list(map(int,input().split()))
-    max = 0
-    anw = 0
-    for i in range(len(arr)) :
-        if (arr.count(arr[i]) > max) :
-            max = arr.count(arr[i])
-            anw = arr[i]
-
-    print(f"#{num} {anw}")
-
-
-   
-    
-
-   
+    c = Counter(arr)
+    print(f"#{n2} {c.most_common(1)[0][0]}")
+               
