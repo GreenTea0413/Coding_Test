@@ -1,33 +1,30 @@
-t = int(input())
+n = int(input())
 
-for test_case in range(1, t + 1):
-    num = int(input())
-    arr = [[0] * num for _ in range(num)]  # num x num 크기의 2차원 배열 생성
-
-    # 방향 설정 (우, 하, 좌, 상)
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    direction_index = 0  # 현재 방향 인덱스
-    x, y = 0, 0  # 시작 위치
-    current_value = 1  # 시작 값
-
-    while current_value <= num * num:
-        arr[x][y] = current_value  # 현재 위치에 값 할당
-        current_value += 1
-
-        # 다음 위치 계산
-        next_x = x + directions[direction_index][0]
-        next_y = y + directions[direction_index][1]
-
-        # 배열 범위를 벗어나거나 이미 값이 채워져 있는 경우 방향 변경
-        if next_x < 0 or next_x >= num or next_y < 0 or next_y >= num or arr[next_x][next_y] != 0:
-            direction_index = (direction_index + 1) % 4  # 방향을 시계방향으로 전환
-            next_x = x + directions[direction_index][0]
-            next_y = y + directions[direction_index][1]
-
-        # 위치 업데이트
-        x, y = next_x, next_y
+for i in range(n):
+    n2 = int(input())
+    arr = [[0] * n2 for _ in range(n2)]
+    
+    d = [[0,1], [1,0], [0,-1], [-1,0]]
+    print(f"#{i + 1}")
+    
+    x, y, z = 0, 0, 0
+    
+    for j in range(1, n2 * n2 + 1):
+        arr[x][y] = j
+        
+        nx = x + d[z][0]
+        ny = y + d[z][1]
+        
+        # 방향 전환 조건
+        if nx < 0 or nx >= n2 or ny < 0 or ny >= n2 or arr[nx][ny] != 0:
+            z = (z + 1) % 4
+            nx = x + d[z][0]
+            ny = y + d[z][1]
+        
+        x, y = nx, ny
 
     # 출력
-    print(f'#{test_case}')
-    for row in arr:
-        print(" ".join(map(str, row)))
+    for k in range(n2):
+        for l in range(n2):
+            print(arr[k][l], end=' ')
+        print()
