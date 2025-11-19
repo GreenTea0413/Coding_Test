@@ -1,34 +1,34 @@
-test_case = int(input())
+n = int(input())
 
-for t in range(1, test_case + 1) :
+for i in range(n):
+    n1, n2 = map(int, input().split())
+    arr = [list(map(int, input().split())) for _ in range(n1)]
+    answer = 0
 
-    N, K = map(int, input().split())
-    #여기서 1이 글자가 들어갈 수 있는 곳
-    toma = [list(map(int, input().split())) for _ in range(N)]
-    anw = 0
+    # 가로 검사
+    for a in arr:
+        count = 0
+        for c in a:
+            if c == 1:
+                count += 1
+            else:  
+                if count == n2:
+                    answer += 1
+                count = 0
+        if count == n2:  # 마지막 칸 체크
+            answer += 1
 
-    # 가로 테스트
-    for i in range(N) :
-        x_count = 0
-        y_count = 0
-        for j in range(N) :
-            if(x_count == K and toma[i][j] == 0) :   
-                anw += 1
-                x_count = 0
-            if toma[i][j] == 1 : 
-                x_count += 1
-            elif toma[i][j] == 0 or x_count >= K + 1: 
-                x_count = 0
-            if(y_count == K and toma[j][i] == 0) :   
-                anw += 1
-                y_count = 0
-            if toma[j][i] == 1 : 
-                y_count += 1
-            elif toma[j][i] == 0 or y_count >= K + 1 : 
-                y_count = 0
-        if x_count == K :
-            anw += 1
-        if y_count == K :
-            anw += 1
+    # 세로 검사
+    for x in range(n1):
+        count = 0
+        for y in range(n1):
+            if arr[y][x] == 1:
+                count += 1
+            else:
+                if count == n2:
+                    answer += 1
+                count = 0
+        if count == n2:  # 마지막 칸 체크
+            answer += 1
 
-    print(f'#{t} {anw}')
+    print(f"#{i+1} {answer}")
