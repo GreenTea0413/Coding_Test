@@ -1,20 +1,16 @@
-t = int(input())
+n = int(input())
 
-for test_case in range(1, t + 1):
-    N, M = list(map(int,input().split()))
-    lst = [list(map(int, input().split())) for _ in range(N)]
-    
-    max = 0
-    sum = 0
-    for i in range(N - M + 1) :
-        for j in range(N - M +1) :
-            sum = 0
-            for k in range(i, M + i) :
-                for n in range (j, M + j) :
-                    sum += lst[k][n]                
-            if(sum > max) :
-                max = sum
-
-    print(f"#{test_case} {max}")
-    
-    
+for i in range(1, n + 1) :
+    n1, n2 = map(int, input().split())
+    arr = [list(map(int, input().split())) for _ in range(n1)]
+    m = 0
+    for j in range(n1 - n2 + 1) :
+        for k in range(n1 - n2 + 1) :
+            now = 0
+			# 좌표를 0,0 부터 n1 - n2까지 하겠다는거임 0,0 -> 3,3
+            # 0,0 0,1 1,0 1,1
+            for o in range(n2) : 
+                for p in range(n2) :
+                    now += arr[j + o][k + p]
+            m = max(now, m)
+    print(f"#{i} {m}")
