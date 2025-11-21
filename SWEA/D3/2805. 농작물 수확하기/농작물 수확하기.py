@@ -2,11 +2,8 @@ test = int(input())
 
 for tc in range(1, test + 1 ) :
     N = int(input())
-    arr = [[0] * N  for _ in range(N)]
-    for i in range(N) :
-        line = input().strip()
-        for j in range(N) :
-            arr[i][j] = int(line[j])
+    arr = [list(map(int, input())) for _ in range(N)]
+    
     answer = 0
     mid = int(N // 2)
     dy = [1,-1]
