@@ -1,52 +1,19 @@
-def check(lis, num) :
-    count = 0
-    if(num == 1) :
-        return 1
-    
-    for i in range(int(num/2)) :
-        if(str(lis[i]) == str(lis[num-i-1])) :
-            count += 1
+for tc in range(1, 11) :
+    N = int(input())
+    arr = [list(input().strip()) for _ in range(8)]
+    answer = 0
+    # 0,0 -> 7,7 N  = 4면 0,0 -> 0,3 0,4 -> 0,7
+    # 가로
+    for x in range(8) :
+        for i in range(8 - N + 1) : # 0 1 2 3 4 -> 00 01 02 03
+            col = ''
+            row = ''
+            for y in range(i, N + i) :
+                col += arr[y][x]
+                row += arr[x][y]
+            if row == row[::-1] :
+                answer += 1
+            if col == col[::-1] :
+                answer += 1
 
-    if(int(num / 2) == count) :
-        return 1
-    else :
-        return 0
-    
-
-
-def r_cal(arr, x, y, num) :
-    r_lis = []
-
-    sum = 0
-
-    for i in range(num):
-        r_lis.append(arr[x][y + i])
-
-    sum += check(r_lis,num)
-   
-    return sum
-
-def d_cal(arr, x, y, num) :
-    d_lis = []
-    sum = 0
-
-    for i in range(num):
-        d_lis.append(arr[x + i][y])
-   
-    sum += check(d_lis,num)
-    
-    return sum
-
-for t in range(1,11) :
-    num = int(input())
-    arr = [list(map(str, input())) for _ in range(8)]
-    anw = 0
-
-    for i in range(8) :
-        for j in range(8 - num + 1) :
-            anw += r_cal(arr, i, j ,num)
-            anw += d_cal(arr, j, i, num)
-            
-    
-    print(f'#{t} {anw}')       
-
+    print(f"#{tc} {answer}")
