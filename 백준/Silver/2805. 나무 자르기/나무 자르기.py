@@ -11,8 +11,10 @@ answer = 0
 while left <= right :
     mid = (left + right) // 2
     total = sum(a - mid for a in arr if a > mid)
-
-    if total >= M :
+    if total == M :
+        answer = mid
+        break
+    elif total > M :
         answer = mid
         left = mid + 1
     else :
