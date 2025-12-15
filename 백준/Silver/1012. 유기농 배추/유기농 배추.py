@@ -1,48 +1,38 @@
+# 백준 1012 - 유기농 배추
+# https://www.acmicpc.net/problem/1012
+# 난이도: 실버 2
+# 알고리즘: DFS/BFS (연결 요소)
+import sys
 from collections import deque
+input = sys.stdin.readline
 
-t = int(input())
+T = int(input())
+dx = [0,0,1,-1]
+dy = [1,-1,0,0]
 
-
-def solution() :
-    anwser = []
-    for i in range(N) :
-        for j in range(M):
-            if(arr[i][j] == 1 and visited[i][j] == False) :
-                anwser.append(BFS(i,j))
-    print(len(anwser))
-
-
-def BFS(i,j) :
-    queue = deque([(i,j)])
-    visited[i][j] = True
-    component = []
-
-    while queue :
-        dx = [0, 0, -1, 1]
-        dy = [-1, 1, 0, 0]
-        x , y =queue.popleft()
-        component.append((x , y))
-        
-        for i in range(4) : 
-            nx = x + dx[i]
-            ny = y + dy[i]
-            if(0 <= nx < N and 0 <= ny < M ) :
-                if(arr[nx][ny] == 1 and  visited[nx][ny] == False) :
-                    visited[nx][ny] = True
-                    queue.append((nx,ny))
-
-    return component
-
-for test in range(1, t + 1) :
-   
-    N,M,K = map(int, input().split())
-
-    # M이 세로 N이 가로 
-    arr = [[0 for i in range(M)] for i in range(N)]
-    visited = [[False for i in range(M)] for i in range(N)]
+for _ in range(T):
+    M, N, K = map(int, input().split())
+    A = [[0] * M for _ in range(N)]
+    q = deque([])
+    answer = 0
 
     for _ in range(K) :
-        x,y = map(int, input().split())
-        arr[x][y] = 1
+        x,y=map(int, input().split())
+        A[y][x] = 1
+    
+    for i in range(N) :
+        for j in range(M) :
+            if A[i][j] == 1 :
+                q.append((i,j))
+                A[i][j] = 0 
+                answer += 1
 
-    solution()
+            while q :
+                x, y = q.popleft()
+
+                for l in range(4) :
+                    nx, ny = x + dx[l], y + dy[l]
+                    if 0<=nx < N and 0<=ny< M and A[nx][ny]== 1 :
+                        q.append((nx,ny))
+                        A[nx][ny] = 0
+    print(answer)
