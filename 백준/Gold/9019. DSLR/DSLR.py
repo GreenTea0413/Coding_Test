@@ -19,29 +19,23 @@ for _ in range(T):
         if num == B :
             print(st)
             break
-        d1 = num // 1000
-        d2 = (num // 100) % 10
-        d3 = (num // 10) % 10
-        d4 = num % 10
         
-        next_D = num*2
-        if next_D > 9999 :
-            next_D = next_D % 10000
-        if v[next_D] == False :
-            q.append((next_D, st+'D')) # D
-            v[next_D] = True
+        d = num*2 % 10000
+        if v[d] == False :
+            q.append((d, st+'D')) # D
+            v[d] = True
         
-        next_S = 9999 if num == 0 else num - 1
-        if v[next_S] == False:
-            q.append((next_S, st+'S'))
-            v[next_S] = True
+        s = (num - 1) % 10000
+        if v[s] == False:
+            q.append((s, st+'S'))
+            v[s] = True
         
-        next_L = d2*1000+d3*100+d4*10+d1
-        if v[next_L] == False :
-            q.append((next_L, st+'L'))
-            v[next_L] = True
+        l = num // 1000 + (num % 1000) * 10
+        if v[l] == False :
+            q.append((l, st+'L'))
+            v[l] = True
 
-        next_R = d4*1000+d1*100+d2*10+d3          
-        if v[next_R] == False :
-            q.append((next_R, st+'R')) # D     
-            v[next_R] = True
+        r = num // 10 + (num % 10) * 1000
+        if v[r] == False :
+            q.append((r, st+'R')) #R 
+            v[r] = True
