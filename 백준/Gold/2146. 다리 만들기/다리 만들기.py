@@ -39,52 +39,34 @@ def island() :
                 number += 1
 island()
 
-# 각 섬의 경계선 찾기
-islands = {}
-for i in range(N):
-    for j in range(N):
-        if map[i][j] > 0:
-            island_num = map[i][j]
-            # 인접한 칸이 바다인 경우 경계선
-            for k in range(4):
-                ni, nj = i + dx[k], j + dy[k]
-                if 0 <= ni < N and 0 <= nj < N and map[ni][nj] == 0:
-                    if island_num not in islands:
-                        islands[island_num] = []
-                    islands[island_num].append((i, j))
-                    break
-
-# 각 섬에서 다른 섬까지의 최단 거리 구하기
-def bfs_from_island(borders, island_num):
-    q = deque()
+# 섬마다 거리 구하기
+def dist_island(a,b,island_num) :
+    dist = float('inf')
+    q = deque([(a,b,0)])
     v = [[False] * N for _ in range(N)]
 
-    # 경계선 전체를 시작점으로
-    for x, y in borders:
-        q.append((x, y, 0))
-        v[x][y] = True
-
-    while q:
+    while q :
         x, y, d = q.popleft()
 
-        for i in range(4):
+        for i in range(4) :
             nx, ny = x + dx[i], y + dy[i]
 
-            if 0 <= nx < N and 0 <= ny < N and not v[nx][ny]:
-                # 다른 섬 발견
-                if map[nx][ny] > 0 and map[nx][ny] != island_num:
-                    return d
-                # 바다
-                elif map[nx][ny] == 0:
-                    v[nx][ny] = True
-                    q.append((nx, ny, d + 1))
+            if 0 <= nx < N and 0 <= ny < N and v[nx][ny] == False :
+                if map[nx][ny] > 0 and map[nx][ny] != island_num :
+                    dist = min(d, dist)
+                elif map[nx][ny] == 0 :
+                    v[nx][ny] = True 
+                    q.append((nx,ny, d+1))
 
-    return float('inf')
+    return dist
 
-# 모든 섬에서 최소 거리 찾기
+# 섬마다 최소 거리 구하기
 answer = float('inf')
-for island_num, borders in islands.items():
-    dist = bfs_from_island(borders, island_num)
-    answer = min(answer, dist)
+
+for a in range(N) :
+    for b in range(N) :
+        if map[a][b] > 0 :
+            dist = dist_island(a,b,map[a][b])
+            answer = min(dist, answer) 
 
 print(answer)
