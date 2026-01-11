@@ -1,21 +1,19 @@
 import heapq
 import sys
 input = sys.stdin.readline
-A = []
+
+# 컵라면
 N = int(input())
+problems = [list(map(int, input().split())) for _ in range(N)]
 
-# 데드라인, 컵라면 수
-for _ in range(N) :
-    A.append(list(map(int, input().split())))
-A.sort()
+problems.sort()
 
-heap = []
-# answer에는 각 데드라인마다 최대 컵라면 갯수 넣기
-for deadline, noodle in A :
-    heapq.heappush(heap, noodle)
+hq = []
 
-    if len(heap) > deadline :
-        heapq.heappop(heap)
+for dead, cup in problems :
+    heapq.heappush(hq,cup)
+
+    if len(hq) > dead :
+        heapq.heappop(hq)
     
-print(sum(heap))
-    
+print(sum(hq))
