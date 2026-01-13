@@ -1,7 +1,7 @@
 import sys
 input = sys.stdin.readline
-N, M = map(int, input().split())
 
+N, M = map(int, input().split())
 A = [int(input()) for _ in range(N)]
 A.sort()
 
@@ -9,15 +9,14 @@ answer = float('inf')
 start, end = 0, 1
 
 while end < N :
-    cur = A[end] - A[start]
+    num = A[end] - A[start]
 
-    if cur >= M :
-        answer = min(answer, cur)
+    if num >= M :
+        answer = min(num, answer)
         start += 1
-    
-    else : 
+    else :
         end += 1
-    
+
     if start == end :
         end += 1
 
