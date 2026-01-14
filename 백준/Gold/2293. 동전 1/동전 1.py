@@ -1,18 +1,14 @@
-# 백준 2293 - 동전 1
-# https://www.acmicpc.net/problem/2293
-# DP - 경우의 수 (Unbounded Knapsack)
 import sys
 input = sys.stdin.readline
+N, K = map(int ,input().split())
+coins = [int(input()) for _ in range(N)]
+coins.sort()
 
-n,k = map(int,input().split())
-
-A = [int(input()) for _ in range(n)]
-dp = [0] * (k + 1)
-
+dp = [0] * (K + 1)
 dp[0] = 1
 
-for a in A :
-    for i in range(a, k + 1) :
-        dp[i] += dp[i-a]
+for c in coins :
+    for i in range(c, K + 1) :
+        dp[i] += dp[i - c]
 
-print(dp[k])
+print(dp[K])    
