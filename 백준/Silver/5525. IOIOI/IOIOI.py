@@ -1,18 +1,24 @@
 import sys
 input = sys.stdin.readline
 
-p = 'I'
 n = int(input())
-
-for i in range(n) :
-    p += 'OI'
-
 m = int(input())
-s = input()
+s = input().strip()
 answer = 0
+count = 0
+i = 0
 
-for i in range(m - (2 * n + 1) + 1) :
-    if s[i : i + (2 * n + 1)] == p :
-        answer += 1
+while i < m - 2 :
+    if s[i : i + 3] == 'IOI' :
+        count += 1
+    
+        if count >= n :
+            answer += 1
+        i += 2
+        
+    else :
+        i += 1
+        count = 0
+
 
 print(answer)
