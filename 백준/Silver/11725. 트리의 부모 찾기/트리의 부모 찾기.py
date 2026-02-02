@@ -1,24 +1,24 @@
 import sys
+sys.setrecursionlimit(10**6)
 input = sys.stdin.readline
 
-N = int(input())
-graph = {i : set() for i in range(1, N + 1)}
-visited = [0] * (N+1)
-for _ in range(N - 1) :
+n = int(input())
+graph = {i : [] for i in range(n + 1)}
+
+for _ in range(n-1) :
     a, b = map(int, input().split())
-    graph[a].add(b)
-    graph[b].add(a)
+    graph[a].append(b)
+    graph[b].append(a)
 
-stack =[1]
+arr = [0] * (n + 1)
 
-while stack :
-    start = stack.pop()
-    for num in graph[start] :
-        if visited[num] == 0 :
-            visited[num] = start
-            stack.append(num)
+def dfs(start) :
+    for node in graph[start] :
+        if arr[node] == 0 :
+            arr[node] = start
+            dfs(node)
+arr[1] = -1
+dfs(1)
 
-
-
-for x in range(2, N+1) :
-    print(visited[x])
+for i in range(2,n + 1) :
+    print(arr[i])
