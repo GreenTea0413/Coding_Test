@@ -1,20 +1,11 @@
-import sys
-input = sys.stdin.readline
-
-N, M = map(int, input().split())
-v = [False] * (N+1)
-
-def dfs(path) :
-    if len(path) == M :
-        for p in path :
-            print(p, end =" ")
-        print()
+def dfs(n,m,answer,visited) :
+    if(len(answer) == m) :
+        print(" ".join(map(str,answer)))
         return
     
-    for j in range(1,N+1) :
-        path.append(j)
-        dfs(path)
-        path.pop()
-
-
-dfs([])
+    for i in range(1, n + 1) :
+        dfs(n,m,answer + [i],visited)
+            
+n, m = map(int,input().split())
+visited = [False for _ in range(n+1)] 
+dfs(n,m,[],visited)
