@@ -1,32 +1,36 @@
 import java.util.*;
+
 class Solution {
     public int solution(int[][] maps) {
         int answer = -1;
-        int[] dx ={0,0,-1,1};
-        int[] dy = {1,-1,0,0};
-        int n = maps.length;
-        int m = maps[0].length;
+        int x_len = maps.length;
+        int y_len = maps[0].length;
         
+        int[] dx = {0,0,1,-1};
+        int[] dy = {1,-1,0,0};
+        boolean [][] v = new boolean[x_len][y_len];       
         Queue<int[]> q = new LinkedList<>();
-        boolean[][] v = new boolean[n][m];
-        q.add(new int[] {0,0,1});
+        
+        q.offer(new int[]{0,0,1});
         v[0][0] = true;
         
         while(!q.isEmpty()){
-            int[] arr= q.poll();
-            if(arr[0] == n- 1 && arr[1] == m-1){
-                return arr[2];
+            int[] cur = q.poll();
+            
+            int cx = cur[0];
+            int cy = cur[1];
+            int dist = cur[2];
+            if (cx == x_len-1 && cy == y_len-1){
+                return dist;
             }
             
-            for(int i =0; i < 4; i++){
-                int nx = arr[0] + dx[i];
-                int ny = arr[1] + dy[i];
+            for(int i = 0; i < 4; i ++){
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
                 
-                if(0<= nx && nx < n && 0<=ny && ny < m){
-                    if(!v[nx][ny] && maps[nx][ny] == 1){
-                        v[nx][ny] = true;
-                        q.add(new int[]{nx,ny,arr[2] + 1});
-                    }
+                if(0<= nx && nx < x_len && 0 <= ny && ny < y_len && !v[nx][ny] && maps[nx][ny] == 1){
+                    q.offer(new int[]{nx,ny,dist+1});
+                    v[nx][ny] = true;
                 }
             }
         }
