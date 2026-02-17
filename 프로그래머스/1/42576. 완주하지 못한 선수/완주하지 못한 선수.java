@@ -11,10 +11,6 @@ class Solution {
         for (String c : completion){
             map.put(c, map.get(c) - 1);
         }
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            String key = entry.getKey();
-            int val = entry.getValue();
-        }
         for (Map.Entry<String, Integer> entry : map.entrySet()){
             String key = entry.getKey();
             int val = entry.getValue();
