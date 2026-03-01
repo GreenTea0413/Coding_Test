@@ -1,32 +1,36 @@
 import java.util.*;
 class Solution {
     public int solution(int[][] jobs) {
-        Arrays.sort(jobs,(j1,j2) -> j1[0] - j2[0]);
-        Queue<int[]> pq = new PriorityQueue<>((j1,j2) -> j1[1] - j2[1]);
-        
+        // 작업의 소요시간이 짧은 것, 작업의 요청 시각이 빠른 것, 작업의 번호가 작은 것 순으로 우선순위
+        // 시간 같으면 요청 시각
+        // 요청 시각 같으면 번호 작은거
+        int time = 0;
         int idx = 0;
-        int cur = 0;
-        int total = 0;
-        int job = 0;
+        int count = 0;
+        int answer = 0;
+        int len = jobs.length;
+        Arrays.sort(jobs, (a,b) -> a[0] - b[0]);
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+            return a[1] - b[1];
+        });
         
-        while(job<jobs.length){
-            while(idx<jobs.length && jobs[idx][0] <= cur){
-                pq.add(jobs[idx]);
-                idx++;
+        while (count < len){
+            while (idx < len && jobs[idx][0] <= time){
+                pq.offer(jobs[idx]);
+                idx ++;
             }
             
-            if(!pq.isEmpty()){
-                int[] j = pq.remove();
-                
-                cur += j[1];
-                total += cur - j[0];
-                job++;
-            }
-            else{
-                cur = jobs[idx][0];
+            
+            if (!pq.isEmpty()) {
+                int[] now = pq.poll();
+                time += now[1];              
+                answer += time - now[0];        
+                count++;
+            } else {
+                time = jobs[idx][0];
             }
         }
         
-        return total / jobs.length;
+        return answer / len;
     }
 }
