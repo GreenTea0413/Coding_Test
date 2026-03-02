@@ -1,15 +1,19 @@
 class Solution {
     public int[] solution(int brown, int yellow) {
-        int s = brown + yellow;
-        
-        for (int h = 1; h <= s / 2; h++) {
-            if (s % h == 0) {
-                int w = s / h;
-                if (w >= h && (w - 2) * (h - 2) == yellow) {
-                    return new int[]{w, h};
+        int[] answer = new int[2];
+        int sq = brown + yellow;
+        // 너비를 딱 나누는 가로 s
+        // 가로 s * 높이 h 
+        for(int s = 1; s < sq; s++){
+            if(sq % s == 0){
+                int h = sq / s;
+                if(s >= h && (s-2) * (h-2) == yellow){
+                    answer = new int[]{s, h};
                 }
             }
         }
-        return new int[]{0, 0};
+        
+        
+        return answer;
     }
 }
