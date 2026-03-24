@@ -1,39 +1,31 @@
 import java.util.*;
-
 class Solution {
     public int solution(int[][] maps) {
-        int answer = -1;
-        int x_len = maps.length;
-        int y_len = maps[0].length;
+        int col = maps.length;
+        int row = maps[0].length;
         
-        int[] dx = {0,0,1,-1};
-        int[] dy = {1,-1,0,0};
-        boolean [][] v = new boolean[x_len][y_len];       
+        int[][] d = new int[][]{{0, 1}, {0, -1}, {1,0}, {-1,0}};
         Queue<int[]> q = new LinkedList<>();
-        
+        boolean[][] v = new boolean[col][row];
         q.offer(new int[]{0,0,1});
         v[0][0] = true;
         
         while(!q.isEmpty()){
-            int[] cur = q.poll();
-            
-            int cx = cur[0];
-            int cy = cur[1];
-            int dist = cur[2];
-            if (cx == x_len-1 && cy == y_len-1){
-                return dist;
+            int[] now = q.poll();
+            if(now[0] == col - 1 && now[1] == row - 1) {
+                return now[2];
             }
             
-            for(int i = 0; i < 4; i ++){
-                int nx = cx + dx[i];
-                int ny = cy + dy[i];
+            for(int i = 0 ; i < 4; i++){
+                int nx = now[0] + d[i][0];
+                int ny = now[1] + d[i][1];
                 
-                if(0<= nx && nx < x_len && 0 <= ny && ny < y_len && !v[nx][ny] && maps[nx][ny] == 1){
-                    q.offer(new int[]{nx,ny,dist+1});
+                if(0 <= nx && nx < col && 0 <= ny && ny < row && !v[nx][ny] && maps[nx][ny] == 1){
                     v[nx][ny] = true;
+                    q.offer(new int[]{nx,ny,now[2] + 1});
                 }
             }
         }
-        return answer;
+        return -1;
     }
 }
