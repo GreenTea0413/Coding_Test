@@ -3,20 +3,24 @@ class Solution {
         int answer = 0;
         int len = land.length;
         int[][] dp = new int[len][4];
+        // 첫줄 이렇게 하고
         for(int i = 0; i < 4; i++){
             dp[0][i] = land[0][i];
         }
-        // [1][0] 이면 [0][1], [0][2], [0][3] 중에서 고르기
-        // [1][1] 이면 [0][0], [0][2], [0][3]
-        for(int i = 1; i < len; i++){
+        
+        for (int i = 1; i < len; i++){
+            // 본인 위치 제외하고 나머지 3개 더하기랑 그냥 dp[i][j]위치
             for(int j = 0; j < 4; j++){
-                dp[i][j] = Math.max(land[i][j] + Math.max(Math.max(dp[i-1][(j + 1)% 4], dp[i-1][(j + 2)% 4]), dp[i-1][(j + 3)% 4]), dp[i][j]);    
+                dp[i][j] = Math.max(land[i][j] + Math.max(Math.max(dp[i-1][(j + 1)% 4], dp[i-1][(j + 2)% 4]), dp[i-1][(j + 3)% 4]), dp[i][j]);
             }
         }
         
         for(int i = 0; i < 4; i++){
-            answer = Math.max(dp[len-1][i], answer);
+            answer = Math.max(answer, dp[len-1][i]);
         }
+        
+        
+        
         return answer;
     }
 }
