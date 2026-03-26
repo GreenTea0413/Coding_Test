@@ -4,35 +4,33 @@ class Solution {
     public Set<Integer> set = new HashSet<>();
     public int solution(String numbers) {
         int answer = 0;
-        boolean[] v = new boolean[numbers.length()];
-        permutation(numbers, v, "");
+        int len = numbers.length();
+        boolean[] v= new boolean[len];
+        permutate(numbers, v, "");
         
-        for(int num : set){
-            if (isPrime(num)){
-                answer++;
-            }
+        for(int n : set){
+            if(isPrime(n)) answer++;
         }
         return answer;
     }
     
-    public void permutation(String numbers, boolean[] v, String cur){
-        if(!cur.equals("")){
-            set.add(Integer.parseInt(cur));
+    public void permutate(String numbers, boolean[] v, String now){
+        if(!now.equals("")) {
+            set.add(Integer.parseInt(now));
         }
         
-        for(int i = 0; i < numbers.length(); i++){
+        for(int i = 0 ; i < numbers.length(); i++){
             if(!v[i]){
                 v[i] = true;
-                permutation(numbers, v, cur + numbers.charAt(i));
+                permutate(numbers, v, now + numbers.charAt(i));
                 v[i] = false;
             }
         }
     }
-    
     public boolean isPrime(int num){
-        if (num < 2){ return false; }
+        if(num < 2) return false;
         for(int i = 2; i <= Math.sqrt(num); i++){
-            if (num % i == 0){
+            if(num % i == 0) {
                 return false;
             }
         }
