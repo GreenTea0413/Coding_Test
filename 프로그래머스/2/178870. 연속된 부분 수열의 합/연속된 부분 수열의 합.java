@@ -1,31 +1,29 @@
+import java.util.*;
 class Solution {
     public int[] solution(int[] sequence, int k) {
-        int[] answer = new int[2];
-        
+        // index 값을 넣어야함
+        int len = sequence.length;
+        int[] answer = {0,len - 1};
+        int sum = 0;
         int left = 0;
         int right = 0;
-        int len = sequence.length;
-        int size = len + 1;
-        int sum = 0;
         
-        while(right < len){    
+        // 길이 비교도 해야함
+        while(right < len){
             sum += sequence[right];
-            if (sum > k){
-                while(sum > k && left <= right){
-                    sum -= sequence[left];
-                    left++;
-                }
+            while(left < right && sum > k){
+                sum -= sequence[left];
+                left++;
             }
             if (sum == k) {
-                int s = right - left + 1;
-                if(size > s) {
-                    size = s;
+                if (answer[1] - answer[0] > right - left){
                     answer[0] = left;
                     answer[1] = right;
                 }
             }
             right++;
         }
+        
         return answer;
     }
 }
