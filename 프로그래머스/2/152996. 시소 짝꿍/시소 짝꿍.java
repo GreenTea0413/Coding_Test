@@ -7,17 +7,18 @@ class Solution {
         
         double[][] ratios = {{1,1}, {2,3}, {3,2}, {1,2}, {2,1}, {3,4}, {4,3}};
         
-        for (int w : weights) {
-            for (double[] r : ratios) {
-                double target = w * r[0] / r[1];
-                if (map.containsKey(target)) {
-                    answer += map.get(target);  
+        for(int w : weights){
+            for(double [] r : ratios){
+                double key = w * r[0] / r[1];
+                if(map.containsKey(key)){
+                    answer += map.get(key);
                 }
             }
-            if (map.containsKey((double) w)) {
-                map.put((double) w, map.get((double) w) + 1);  
-            } else {
-                map.put((double) w, 1L);  
+            if(map.containsKey((double) w)){
+                map.put((double) w, map.get((double) w) + 1);
+            }
+            else{
+                map.put((double) w, 1L);
             }
         }
         
