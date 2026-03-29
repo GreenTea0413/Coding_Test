@@ -1,61 +1,58 @@
 import java.util.*;
-
 class Solution {
-    // 0 ->,  1 <-,  2 v,  3 ㅅ
-    int[] dx = {0,0,1,-1};
-    int[] dy = {1,-1,0,0};
-    
     public int solution(String[] board) {
-        int max_x = board.length;
-        int max_y = board[0].length();
-        char[][] map = new char[max_x][max_y];
-        int i = 0;
-        int[] start = new int[2];
-        int[] end = new int[2];
+        // 쭉 미끄러져서 가는 느낌
+        // 도착 지점을 가져야함
+        int[] start = {0,0};
+        int[] end = {0,0};
         
-        // 격자 배열 만들기
-        for(String s : board){
-            for(int j = 0; j < s.length(); j++){
-                char c = s.charAt(j);
-                map[i][j] = c;
-                if(c == 'R') start = new int[]{i, j};
-                if(c == 'G') end = new int[]{i, j};
+        for(int i = 0; i < board.length; i++){
+            for (int j = 0; j < board[0].length(); j++){
+                if(board[i].charAt(j) == 'R') start = new int[]{i, j};
+                if(board[i].charAt(j) == 'G') end = new int[]{i, j};
             }
-            i++;
         }
-        
-        // 방향에 따라 그냥 쭉감!
-        // d에 부딪히면 d 빼고 나머지 방향으로 움직일 수 있음
-        // 그럼 queue에 저장해야하는게 x좌표, y좌표, 방향, 횟수
+        return bfs(start, end, board);
+    }
+    public int bfs(int[] start, int[] end, String[] board){
         Queue<int[]> q = new LinkedList<>();
-        boolean[][] visited = new boolean[max_x][max_y];
         q.offer(new int[]{start[0], start[1], 0});
         
+        int lenX = board.length;
+        int lenY = board[0].length();
+        boolean[][] v = new boolean[lenX][lenY];
+        v[start[0]][start[1]] = true;
+        
+        int[][] d = {{1,0}, {-1,0}, {0,1}, {0,-1}};
         while(!q.isEmpty()){
             int[] now = q.poll();
             int cx = now[0];
             int cy = now[1];
-            int cc = now[2];
-            if(cx == end[0] && cy == end[1]) return cc;
-
-            // 여기서 출발 했을 때 방향대로 쭉 간다
-            for(int d = 0; d < 4; d++){
-                int nx = cx, ny = cy;
-                // 벽/D 만날 때까지 쭉 이동
+            if(cx == end[0] && cy == end[1]){return now[2];}
+            
+            for(int i = 0; i < 4; i++){
+                int nx = cx;
+                int ny = cy;
+                
                 while(true){
-                    int tx = nx + dx[d];
-                    int ty = ny + dy[d];
-                    if(tx < 0 || tx >= max_x || ty < 0 || ty >= max_y 
-                       || map[tx][ty] == 'D') break;
-                    nx = tx; ny = ty;
+                    int tx = nx + d[i][0];
+                    int ty = ny + d[i][1];
+                    
+                    if(tx < 0 || tx >= lenX || ty < 0 || ty >= lenY || 
+board[tx].charAt(ty) == 'D'){
+                        break;
+                    }
+                    nx = tx;
+                    ny = ty;
                 }
-                // 실제 이동했고 미방문이면 추가
-                if((nx != cx || ny != cy) && !visited[nx][ny]){
-                    visited[nx][ny] = true;
-                    q.offer(new int[]{nx, ny, cc + 1});
+                if ((cx != nx || cy != ny) && !v[nx][ny]){
+                    v[nx][ny] = true;
+                    q.offer(new int[]{nx, ny, now[2] + 1});
                 }
             }
         }
+            
+    
         return -1;
     }
 }
