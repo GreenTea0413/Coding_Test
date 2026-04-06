@@ -1,33 +1,37 @@
 import java.util.*;
 class Solution {
-    int answer;
     public int solution(String begin, String target, String[] words) {
+        int answer = 0;
         boolean[] v = new boolean[words.length];
-        answer = words.length;
-        dfs(begin, target, words, v, 0);
+        Queue<String> q = new LinkedList<>();
+        q.offer(begin);
         
-        if (answer == words.length) return 0;
-        return answer;
-    }
-    // dfs + 백트래킹으로 모든 단어 돌면서 찾아보기
-    public void dfs(String begin, String target, String[] words, boolean[] v, int count){
-        if(begin.equals(target)){
-            answer = Math.min(count, answer);
-            return;
-        }
-        
-        for(int i = 0; i < words.length; i++){
-            int c = 0;
-            String word = words[i];
-            for (int j = 0; j < word.length(); j++){
-                if (begin.charAt(j) != word.charAt(j)){ c+= 1;}
-            }
+        while(!q.isEmpty()){
+            int size = q.size();
             
-            if(c == 1 && !v[i]){
-                v[i] = true;
-                dfs(word, target, words, v, count + 1);
-                v[i] = false;
+            for(int i = 0; i < size; i++){
+                String cur = q.poll();
+                
+                if(cur.equals(target)) return answer;
+                
+                for(int j = 0; j < words.length; j++){
+                    if(!v[j] && isDiff(cur, words[j]) == 1){
+                        v[j] = true;
+                        q.offer(words[j]);
+                    }
+                }
             }
+            answer ++;
         }
+        return 0;
+    }
+    
+    public int isDiff(String s1, String s2){
+        int gap = 0;
+        for(int i = 0; i < s1.length(); i++){
+            if(s1.charAt(i) != s2.charAt(i)) gap++;
+        }
+        
+        return gap;
     }
 }
