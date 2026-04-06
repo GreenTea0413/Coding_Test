@@ -1,40 +1,33 @@
 import java.util.*;
-
 class Solution {
-    static int answer = 51;
-    static boolean[] v;
-    public void dfs(String s, String end, String[] words, int count){
-        if(s.equals(end)) {
-            answer = Math.min(answer, count);
+    int answer;
+    public int solution(String begin, String target, String[] words) {
+        boolean[] v = new boolean[words.length];
+        answer = words.length;
+        dfs(begin, target, words, v, 0);
+        
+        if (answer == words.length) return 0;
+        return answer;
+    }
+    // dfs + 백트래킹으로 모든 단어 돌면서 찾아보기
+    public void dfs(String begin, String target, String[] words, boolean[] v, int count){
+        if(begin.equals(target)){
+            answer = Math.min(count, answer);
             return;
         }
         
         for(int i = 0; i < words.length; i++){
-            String t = "";
-            int num = 0;
-            String w = words[i];
-            for(int j = 0; j < s.length(); j++){
-                if(s.charAt(j) != w.charAt(j)){
-                    t += w.charAt(j);
-                    num++;
-                }
-                else{
-                    t += s.charAt(j);
-                }
+            int c = 0;
+            String word = words[i];
+            for (int j = 0; j < word.length(); j++){
+                if (begin.charAt(j) != word.charAt(j)){ c+= 1;}
             }
-            if(num == 1 && !v[i]){
+            
+            if(c == 1 && !v[i]){
                 v[i] = true;
-                dfs(t, end, words, count + 1);
+                dfs(word, target, words, v, count + 1);
                 v[i] = false;
             }
         }
-    }
-    
-    public int solution(String begin, String target, String[] words) {
-        v= new boolean[words.length];
-        
-        dfs(begin, target, words, 0);
-        if(answer == 51) answer = 0;
-        return answer;
     }
 }
