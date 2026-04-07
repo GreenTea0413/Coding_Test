@@ -2,27 +2,27 @@ import java.util.*;
 
 class Solution {
     public long solution(int n, int[] works) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        long answer = 0;
+        // 남은 일의 제곱량의 합
+        // n은 내가 지금 할 수 있는 작업
+        // 그러면 works에 값에서 n만큼 빼서 최솟값을 반환
+        // [4, 3, 3] -> [2, 2, 2] -> 12
         
-        long total= 0;
-        for(int w : works){
-            total += w;
-            pq.offer(w);
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {return b-a;});
+        for(int work : works){
+            pq.offer(work);
         }
         
-        if (total < n) {return 0;}
-        
-        while (n > 0){
-            int max = pq.poll();
-            max -= 1;
-            pq.offer(max);
+        while(n > 0){
+            int num = pq.poll();
+            
+            if(num == 0) break;
+            pq.offer(num - 1);
             n--;
         }
         
-        long answer = 0;
-        while (!pq.isEmpty()) {
-            long w = pq.poll();
-            answer += w * w;
+        for(int num : pq){
+            answer += num * num;
         }
         return answer;
     }
