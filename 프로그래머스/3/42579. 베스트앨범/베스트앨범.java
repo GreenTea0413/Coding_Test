@@ -1,41 +1,43 @@
 import java.util.*;
 class Solution {
     public int[] solution(String[] genres, int[] plays) {
-        // [장르, [고유번호, 횟수]] -> [String, [Integer, Integer]]
-        Map<String, List<int[]>> map = new HashMap<>();
         Map<String, Integer> total = new HashMap<>();
+        Map<String, List<int[]>> map = new HashMap<>();
+        
         int len = plays.length;
-        for (int i = 0; i < len; i++){
-            total.put(genres[i], total.getOrDefault(genres[i], 0) + plays[i]);
+        for(int i = 0; i < len; i++){
+            String gen = genres[i];
+            int p = plays[i];
             
-            map.putIfAbsent(genres[i], new ArrayList<>());
-            map.get(genres[i]).add(new int[]{i, plays[i]});
+            total.put(gen, total.getOrDefault(gen, 0) + p);
+            
+            map.putIfAbsent(gen, new ArrayList<>());
+            map.get(gen).add(new int[]{i, p});
         }
         
-        List<String> list = new ArrayList<>(total.keySet());
-        list.sort((a, b) -> total.get(b) - total.get(a));
+        List<String> genKey = new ArrayList<>(total.keySet());
+        genKey.sort((a, b) -> {return total.get(b) - total.get(a);});
         
         List<Integer> answer = new ArrayList<>();
         
-        for(String l : list){
-            List<int[]> song = map.get(l);
+        for(String key : genKey){
+            // 고유번호랑 플레이 시간 가져오기
+            List<int[]> playList = map.get(key);
             
-            song.sort((a,b) -> {
-                if(a[1] == b[1]){
-                    return a[0] - b[0];
-                }
-                else 
-                    return b[1] - a[1];
+            playList.sort((a, b) -> {
+                // 같은 노래 중에서는 고유 번호가 낮은 노래를 먼저 수록
+                if(a[1] == b[1]) return a[0] - b[0];
+                return b[1] - a[1];
             });
-                
+            
             int count = 0;
-            for (int[] s : song) {
-                answer.add(s[0]);
+            for(int[] play : playList){
+                answer.add(play[0]);
                 count++;
-                if (count == 2) break;
+                
+                if(count == 2) break;
             }
         }
-        
         return answer.stream().mapToInt(i -> i).toArray();
     }
 }
