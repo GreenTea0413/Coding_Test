@@ -19,7 +19,7 @@ class Solution {
     public String toStr(int n){
         String temp = "";
         
-        while (n > 0){
+        while(n > 0){
             int r = n % 2;
             temp += String.valueOf(r);
             n /= 2;
