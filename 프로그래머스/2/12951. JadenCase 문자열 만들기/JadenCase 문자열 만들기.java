@@ -8,7 +8,6 @@ class Solution {
             answer += str[i].substring(0,1).toUpperCase() + str[i].substring(1).toLowerCase();}
             if (i < str.length - 1) answer += " ";
         }
-        
         return answer;
     }
 }
