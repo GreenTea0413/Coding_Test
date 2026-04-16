@@ -5,10 +5,11 @@ class Solution {
     
     public int dfs(int[] numbers, int target, int sum, int depth){
         if(numbers.length == depth){
-            if (target == sum) return 1;
+            if(target == sum) return 1;
             else return 0;
         }
         
         return dfs(numbers, target, sum + numbers[depth], depth + 1) + dfs(numbers, target, sum - numbers[depth], depth + 1);
+        
     }
 }
