@@ -2,33 +2,35 @@ import java.util.*;
 class Solution {
     public int solution(int[] priorities, int location) {
         int answer = 0;
-        int len = priorities.length;
+        
+        // priorities 0부터 시작하는 idx ,우선순위 적혀있는 value
         Queue<int[]> q = new LinkedList<>();
-        
-        for(int i = 0; i < len; i++){
+        for(int i =0; i < priorities.length; i++){
             q.offer(new int[]{i, priorities[i]});
-        }
-        
+        } 
+    
         while(!q.isEmpty()){
-            int[] cur = q.poll();
+            int[] next = q.poll();
+            int time = next[1];
+            
             boolean isHigher = false;
-            for(int[] qn : q){
-                if(qn[1] > cur[1]){
+            for(int[] arr : q){
+                if(arr[1] > next[1]){
                     isHigher = true;
                     break;
                 }
             }
             
-            if(isHigher){
-                q.offer(cur);
-            }
+            if(isHigher) q.offer(next);
             else{
-                answer++;
-                if(cur[0] == location) {
+                answer ++;
+                if(next[0] == location){
                     return answer;
-                };
+                }
             }
         }
+        
+        
         return answer;
     }
 }
