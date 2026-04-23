@@ -1,39 +1,34 @@
 import java.util.*;
 
 class Solution {
-    // 최대큐 최소큐 2개 만들어서 작성
     public int[] solution(String[] operations) {
-        PriorityQueue<Integer> minQ = new PriorityQueue<>();
-        PriorityQueue<Integer> maxQ = new PriorityQueue<>((a, b) -> {
-            return b - a;
-        });
+        int[] answer = new int[2];
+        PriorityQueue<Integer> minPQ = new PriorityQueue<>((a, b) -> a - b);
+        PriorityQueue<Integer> maxPQ = new PriorityQueue<>((a, b) -> b - a);
         
         for(String op : operations){
-            String[] str = op.split(" ");
+            String[] arr = op.split(" ");
             
-            if(str[0].equals("I")){
-                int num = Integer.parseInt(str[1]);
-                maxQ.offer(num);
-                minQ.offer(num);
+            // 일단 들어오면 둘 다 넣기
+            if(arr[0].equals("I")){
+                minPQ.offer(Integer.parseInt(arr[1]));
+                maxPQ.offer(Integer.parseInt(arr[1]));
             }
-            
             else{
-                // 16 -5643
-                // -5643 16
-                if(maxQ.isEmpty() || minQ.isEmpty()) continue;
-                
-                if (str[1].equals("1")){
-                    int max = maxQ.poll();
-                    minQ.remove(max);
-                }
-                else{
-                    int min = minQ.poll();
-                    maxQ.remove(min);
+                if(!minPQ.isEmpty()){
+                    if(arr[1].equals("1")){
+                        int temp = maxPQ.poll();
+                        minPQ.remove(Integer.valueOf(temp));
+                    }
+                    else{
+                        int temp = minPQ.poll();
+                        maxPQ.remove(Integer.valueOf(temp));
+                    }
                 }
             }
         }
         
-        if (maxQ.isEmpty()) return new int[]{0,0};
-        return new int[] {maxQ.peek(), minQ.peek()};
+        if(!minPQ.isEmpty()){return new int[]{maxPQ.poll(), minPQ.poll()};}
+        return answer;
     }
 }
