@@ -1,42 +1,43 @@
 import java.util.*;
 class Solution {
     public int solution(String s) {
-        int answer = s.length();
-        for (int i = 1; i <= s.length() / 2; i++) {
-            answer = Math.min(answer, compress(s, i));
-        }
-
-        return answer;
-    }
-    
-    int compress(String s, int len){
-        List<String> words = new ArrayList<>();
-        for(int i = 0; i < s.length(); i += len){
-            words.add(s.substring(i, Math.min(s.length(), i + len)));
-        }
+        int len = s.length();
+        int answer = len;
         
-        StringBuilder sb = new StringBuilder();
-        String pre = "";
-        int count = 0;
-        
-        for(String word : words){
-            if(word.equals(pre)){
-                count++;
-            }
-            else{
-                if(count > 1){
-                    sb.append(String.valueOf(count));
+        // 문자열 길이 만큼 단위를 쪼개기
+        for(int i = 1; i <= len; i++){
+            // 처음 1개 단위
+            StringBuilder sb = new StringBuilder();
+            // 단어 처음 것을 먼저 기준 잡음
+            // "ababcdcdababcdcd"
+            // unit = a next = b
+            String unit = s.substring(0, i);
+            int start =i, end = i * 2;
+            int count = 1;
+            
+            while(end <= len){
+                String next = s.substring(start, end);
+                // a b가 다르면 a를 그냥 넣음
+                if(!unit.equals(next)){
+                    if(count > 1) sb.append(count);
+                    sb.append(unit);
+                    unit = next;
+                    count = 1;
                 }
-                sb.append(pre);
-                pre = word;
-                count = 1;
+                // a a가 같으면
+                else{
+                    count += 1;
+                }
+                
+                start += i;
+                end += i;
             }
+            if(count > 1){sb.append(count);}
+            sb.append(unit);
+            
+            if(end >= len) sb.append(s.substring(start));
+            answer = Math.min(sb.length(), answer);
         }
-        if(count > 1){
-            sb.append(String.valueOf(count));
-        }
-        sb.append(pre);
-        
-        return sb.toString().length();
+        return answer;
     }
 }
