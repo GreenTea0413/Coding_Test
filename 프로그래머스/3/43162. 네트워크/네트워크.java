@@ -1,42 +1,42 @@
 import java.util.*;
+
 class Solution {
     public int solution(int n, int[][] computers) {
         int answer = 0;
-        int yLen = computers[0].length;
-        
         List<List<Integer>> graph = new ArrayList<>();
+        for(int i = 0; i <= n; i ++){graph.add(new ArrayList<>());}
         
-        for(int i = 0; i <= n; i++){ graph.add(new ArrayList<>());}
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < yLen; j++){
-                if(computers[i][j] == 1){
+        for(int i = 0; i < n - 1; i++){
+            for(int j = i + 1; j < n; j++){
+                if(i != j && computers[i][j] == 1){
                     graph.get(i).add(j);
                     graph.get(j).add(i);
                 }
             }
         }
-        
-        Queue<Integer> q = new LinkedList<>();
+        // 0 -> 1
+        // 1 -> 0
+        // 2
         boolean[] v = new boolean[n + 1];
         for(int i = 0; i < n; i++){
             if(!v[i]){
-                v[i] = true;
-                answer++;
+                answer ++;
+                Queue<Integer> q = new LinkedList<>();
                 q.offer(i);
+                v[i] = true;
                 while(!q.isEmpty()){
-                    int start = q.poll();
-                    v[start] = true;
-                    for(int next : graph.get(start)){
+                    int now = q.poll();
+                    for(int next : graph.get(now)){
                         if(!v[next]){
-                            v[next] = true;
                             q.offer(next);
+                            v[next] = true;
                         }
                     }
                 }
             }
         }
         
+        
         return answer;
     }
 }
-
