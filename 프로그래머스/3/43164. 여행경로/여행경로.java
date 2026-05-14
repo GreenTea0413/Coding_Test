@@ -1,55 +1,47 @@
 import java.util.*;
-
 class Solution {
     String[] answer;
-    boolean finished = false;
-    int count;
+    int len;
+    boolean found = false;
+
     public String[] solution(String[][] tickets) {
-        count = tickets.length;
-        answer = new String[count+1];
-        Map<String, List<String>> graph = new HashMap<>();
+        len = tickets.length;
         
-        for(String[] s : tickets){
-            String from = s[0];
-            String to = s[1];            
-            graph.computeIfAbsent(from, x -> new ArrayList<>()).add(to);
+        // ICN이 가는 idx 저장해놓기
+        Map<String, List<Integer>> map = new HashMap<>();
+        for(int i = 0; i < len; i++){
+            String start = tickets[i][0];
+            map.putIfAbsent(start, new ArrayList<>());
+            map.get(start).add(i);
         }
         
-        for(List<String> l : graph.values()){
-            Collections.sort(l);
+        for(List<Integer> list : map.values()){
+            Collections.sort(list, (a, b) -> tickets[a][1].compareTo(tickets[b][1]));
         }
         
-        
-        List<String> path = new ArrayList<>();
-        path.add("ICN");
-        dfs("ICN", graph, path);
+        String[] path = new String[len + 1];
+        path[0] = "ICN";
+        dfs(tickets, map, new boolean[len], "ICN", 0, path);
         
         return answer;
     }
     
-    void dfs(String current, Map<String, List<String>> graph, List<String> path){
-        if (finished) return;
-        
-        if (path.size() == count + 1){
-            for(int i = 0; i < path.size(); i++){
-                answer[i] = path.get(i);
-            }
-            finished = true;
+    public void dfs(String[][] tickets, Map<String, List<Integer>> map, boolean[] v, String now, int depth, String[] path){
+        if(depth == len){
+            answer = path.clone();
+            found = true;
             return;
         }
         
-        List<String> destinations = graph.getOrDefault(current, new ArrayList<>());
-        for (int i = 0; i < destinations.size(); i++){
-            String next = destinations.get(i);
-            
-            destinations.remove(i);
-            path.add(next);
-            
-            dfs(next, graph, path);
-            
-            path.remove(path.size() -1);
-            destinations.add(i, next);
-        }
+        if(!map.containsKey(now)) return;
         
+        for(int idx : map.get(now)){
+            if(!v[idx] && !found){
+                v[idx] = true;
+                path[depth + 1] = tickets[idx][1];
+                dfs(tickets, map, v, tickets[idx][1], depth + 1, path);
+                v[idx] = false;
+            }
+        }
     }
 }
