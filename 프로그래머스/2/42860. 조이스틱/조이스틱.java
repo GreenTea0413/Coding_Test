@@ -2,8 +2,7 @@ class Solution {
     public int solution(String name) {
         int answer = 0;
         int len = name.length();
-        // A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
-        // 1  2. 3  4. 5. 6. 7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+
         // 이거는 위아래 방향만 더하기
         for(int i = 0; i < len; i++){
             // A에서 Z갔다가 돌아서 가는거
@@ -19,17 +18,21 @@ class Solution {
             }
         }
         
-        // 좌우 ZAAAAAAJ
+        // ZAAAAJAA
+        // 01234567
+        // 최대로 움직이게 되는 move
         int move = len - 1;
         for (int i = 0; i < len; i++){
             int next = i + 1;
-            
+            // 여기서 i = 0 일 때 next는 J 위치임 len - 1까지 가게됨
             while (next < len && name.charAt(next) == 'A') {
                 next++;
             }
             
-            move = Math.min(move, i * 2 + len - next);
-            move = Math.min(move, (len - next) * 2 + i);
+            // next = 8
+            move = Math.min(move, (len - next) + i * 2);
+            move = Math.min(move, i + (len - next) * 2);
+            
         }
         
         return answer + move;
