@@ -1,14 +1,32 @@
+import java.util.*;
+
 class Solution {
     public String solution(String number, int k) {
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < number.length(); i++){
-            char c = number.charAt(i);
-            while(sb.length() > 0 && k > 0 && sb.charAt(sb.length() - 1) < c){
-                sb.deleteCharAt(sb.length() - 1);
+        String answer = "";
+        String[] num = number.split("");
+        Stack<Integer> q = new Stack<>();
+        
+        for(String n : num){
+            while(k > 0 && !q.isEmpty() && q.peek() < Integer.parseInt(n)){
+                q.pop();
                 k--;
             }
-            sb.append(c);
+            q.push(Integer.parseInt(n));
         }
-        return sb.substring(0, sb.length() - k);
+        
+        
+        for(int i = 0; i < k; i++){
+            q.pop();
+        }
+        
+        String temp = "";
+        while(!q.isEmpty()){
+            temp += String.valueOf(q.pop());
+        }
+        
+        for(int i = temp.length() - 1; i >= 0; i--){
+            answer += String.valueOf(temp.charAt(i));
+        }
+        return answer;
     }
 }
