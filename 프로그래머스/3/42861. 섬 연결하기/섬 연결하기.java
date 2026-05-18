@@ -2,38 +2,39 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int[][] costs) {
-        ArrayList<ArrayList<int[]>> graph = new ArrayList<>();
-        for(int i = 0; i < n; i++){
-            graph.add(new ArrayList<>());
+        List<List<int[]>> graph = new ArrayList<>();
+        
+        for(int i = 0; i <= n; i++){graph.add(new ArrayList<>());}
+        for(int[] cost : costs){
+            int start = cost[0], end = cost[1], num = cost[2];
+            graph.get(start).add(new int[]{end, num});
+            graph.get(end).add(new int[]{start, num});
         }
         
-        for (int[] cost : costs){
-            graph.get(cost[0]).add(new int[]{cost[1],cost[2]});
-            graph.get(cost[1]).add(new int[]{cost[0],cost[2]});
-        }
-        boolean[] v = new boolean[n];
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
-           return a[1] - b[1];
-        });
+        // 끝점이랑 거리
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> (a[1] - b[1]));
         pq.offer(new int[]{0,0});
         
+        boolean[] v = new boolean[n];
         int answer = 0;
-        while (!pq.isEmpty()){
-            int[] now = pq.poll();
-            int node = now[0];
-            int dist = now[1];
+        
+        while(!pq.isEmpty()){
+            int[] arr = pq.poll();
+            int node = arr[0];
+            int dist = arr[1];
             
             if(v[node]) continue;
-            
             v[node] = true;
             answer += dist;
             
-            for(int[] next : graph.get(node)){ 
-                if (!v[next[0]]){
+            for(int[] next : graph.get(node)){
+                if(!v[next[0]]){
                     pq.offer(next);
                 }
             }
         }
+        
+        
         return answer;
     }
 }
