@@ -1,33 +1,29 @@
 import java.util.*;
+
 class Solution {
     public int[] solution(int[] prices) {
         int len = prices.length;
         int[] answer = new int[len];
-        Stack<Integer> stack = new Stack<>();
-        
+        Stack<Integer> q = new Stack<>();
+        // 값 : 1 2 3 2 3
+        // 인 : 0 1 2 3 4
+        // 이러면 1,2,3 들어가고 2 들어갈 때(i가 3일때) 3보다 작기때문에 한번 q.poll발생
+        // 3 - 2는 1인데..?
+        // answer = [0,0,1,0,0]이 되어버림
+        // 그리고 q는 이제 [0,1,3,4]가 되어버림
         for(int i = 0; i < len; i++){
-            // 1 2 3 2 3
-            // 1일 때는 그냥 stack 추가
-            // 2일 때는 stack에다가 prices[idx = 0] > prices[i = 1]이 아니기에 근야 push
-            // 3일 때도 그냥 push
-            // 2일 때 prices[idx = 2] > prices[i = 3]이 맞음
-            // i = 3일 때 그래서 한번 떨어짐
-            // idx = 2 answer[2] = 3 - 2;
-            // 하고 i를 다시 넣음
-            // i = 4일 때는 
-            // prices[idx = 3] > prices[i = 4]가 안되기 때문에 그냥 넘어감
-            while(!stack.isEmpty() && prices[stack.peek()] > prices[i]){
-                int idx = stack.pop();
-                answer[idx] = i - idx;
+            int p = prices[i];
+            while(!q.isEmpty() && p < prices[q.peek()]){
+                int idx = q.pop();
+                answer[idx] = i - idx;  
             }
-            stack.push(i);
+            q.push(i);
         }
         
-        while(!stack.isEmpty()){
-            int idx = stack.pop();
-            answer[idx] = len - idx - 1;
+        while(!q.isEmpty()){
+            int n = q.pop();
+            answer[n] = len - n - 1;
         }
-        
         return answer;
     }
 }
