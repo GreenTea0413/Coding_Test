@@ -2,31 +2,32 @@ import java.util.*;
 
 class Solution {
     public int solution(int bridge_length, int weight, int[] truck_weights) {
-        int answer = 0;
-        int cur_weight = 0;
-        // 다리 길이 미리 정하기
-        Queue<Integer> bridge = new LinkedList<>();
-        for(int i = 0; i < bridge_length; i++) {bridge.offer(0);}
+        Queue<Integer> q = new LinkedList<>();
+        for(int i = 0; i < bridge_length; i++){q.offer(0);}
         
-        // 이제 트럭 위치를 기반으로 하나씩 보내기
-        // 추가로 하나씩 0을 넣으면 알아서 한칸씩 이동하는 느낌임 (대박)
         int idx = 0;
+        int cur_weight = 0;
+        int answer = 0;
+        // 끝 시작
+        // 0  0 -> 0  7
+        // 0  7
+        // 7  0
+        // 1초마다 한칸씩 앞으로 가서 처리한다고 보면됨
         while(idx < truck_weights.length){
-            cur_weight -= bridge.poll();
-            answer ++;
-            
+            cur_weight -= q.poll();
             int t = truck_weights[idx];
-            if (cur_weight +  t<= weight){
-                bridge.offer(t);
+            
+            if(cur_weight + t <= weight){
                 cur_weight += t;
-                idx ++;
+                q.offer(t);
+                idx++;
             }
             else{
-                bridge.offer(0);
+                q.offer(0);
             }
+            answer++;
         }
-        
-        answer += bridge_length;
-        return answer;
+        // 우리는 한칸씩 앞으로 가면서 값을 계산했고 이제 다 빠져나왔을 경우에 다리길이 더해주면 끝
+        return answer + bridge_length;
     }
 }
