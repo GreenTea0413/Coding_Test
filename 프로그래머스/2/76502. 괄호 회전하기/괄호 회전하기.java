@@ -4,53 +4,38 @@ class Solution {
     public int solution(String s) {
         int answer = 0;
         int len = s.length();
-        if (len % 2 == 1) return 0;
+        if(len % 2 == 1) return 0;
         
-        String[] arr = new String[len * 2];
-        for(int i = 0; i < len * 2; i++){
-            arr[i] = String.valueOf(s.charAt(i % len));
-        }
+        Stack<Character> stack = new Stack<>();
         
-        for (int start = 0; start < len; start++){
-            Stack<String> stack = new Stack<>();
+        for(int i = 0; i < len; i++){
+            String temp = s.substring(i,len) + s.substring(0,i);
             int count = 0;
-            for(int i = start; i < start + len; i++){
-                String next = arr[i];
-                
-                if(next.equals("[") || next.equals("(") || next.equals("{")){
-                    stack.push(next);
-                }
-                
-                else {
-                    if (stack.isEmpty()) {break;}
-                    String word = stack.pop();
-                    if (next.equals("]")){
-                        if (word.equals("[")){
-                            count ++;
-                        }
-                        else{
-                            break;
-                        }
+            for(char c : temp.toCharArray()){
+                if(c == '{' || c == '(' || c == '['){
+                    stack.push(c);
+                }            
+                else{
+                    if(stack.isEmpty()) break;
+                    
+                    if(c == '}'){
+                        if(stack.peek() == '{') {stack.pop(); count++;}
+                        else {break;}
                     }
-                    if (next.equals("}")){
-                        if (word.equals("{")){
-                            count++;
-                        }
-                        else{
-                            break;
-                        }
+                    else if(c == ']'){
+                        if(stack.peek() == '[') {stack.pop(); count++;}
+                        else {break;}
                     }
-                    if (next.equals(")")){
-                        if (word.equals("(")){
-                            count++;
-                        }
-                        else{break;}
+                    else if(c == ')'){
+                        if(stack.peek() == '(') {stack.pop(); count++;}
+                        else {break;}
                     }
+                    
                 }
             }
-            if (count == len / 2) {answer++;}
+            
+            if(count == len / 2){answer++;}
         }
-        
         return answer;
     }
 }
