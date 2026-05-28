@@ -7,28 +7,23 @@ class Solution {
         Queue<Integer> q = new LinkedList<>();
         
         for(int i = 0; i < len; i++){
-            int p = progresses[i];
-            int s = speeds[i];
+            int work = 100 - progresses[i];
+            int rest = work / speeds[i];
+            if(work % speeds[i] >= 1){rest += 1;}
             
-            int temp = 100 - p;
-            int rest = temp / s;
-            if(temp % s > 0){rest += 1;}
+            // 7 3 9
             q.offer(rest);
         }
         
-        // [7, 4, 9]
         while(!q.isEmpty()){
-            int count = 1;
             int now = q.poll();
-            
-            while(!q.isEmpty() && q.peek() <= now){
-                count++;
+            int count = 1;
+            while(!q.isEmpty() && now >= q.peek()){
                 q.poll();
+                count++;
             }
             answer.add(count);
         }
-        
-        
         return answer.stream().mapToInt(i -> i).toArray();
     }
 }
