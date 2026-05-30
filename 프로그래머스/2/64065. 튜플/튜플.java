@@ -2,26 +2,26 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String s) {
-        s = s.substring(2, s.length() - 2);
+        Map<Integer, Integer> map = new HashMap<>();
+        String temp = s.replace("},{", "a");
+        String[] numbers = temp.substring(2, temp.length() - 2).split("a");
         
-        // [0] = "2" [1] = "2,1" [2] = "2,1,3"
-        String[] sets = s.replace("},{","a").split("a");
-        Arrays.sort(sets, (a, b) -> a.split(",").length - b.split(",").length);
-        
-        List<Integer> answer = new ArrayList<>();
-        Set<Integer> visited = new HashSet<>();
-        
-        for(String set : sets){
-            for(String c : set.split(",")){
-                int num = Integer.parseInt(c);
-                
-                if(!visited.contains(num)){
-                    answer.add(num);
-                    visited.add(num);
-                }
+        for(int i = 0; i < numbers.length; i++){
+            String[] num = numbers[i].split(",");
+            for(int j = 0; j < num.length; j++){
+                int n = Integer.parseInt(num[j]);
+                map.put(n, map.getOrDefault(n, 0) + 1);    
             }
         }
         
+        List<Integer> answer = new ArrayList<>();
+        // 1 2 3 4 키를 가지고 이제 정렬
+        List<Integer> list = new ArrayList<>(map.keySet());
+        Collections.sort(list, (a, b) ->{return map.get(b) - map.get(a);});
+        
+        for(int l : list) {
+            answer.add(l);
+        }
         return answer.stream().mapToInt(i -> i).toArray();
     }
 }
