@@ -3,39 +3,34 @@ import java.util.*;
 class Solution {
     public int solution(int[] order) {
         int answer = 0;
-        // 메인 - 맨 앞에 놓인 상자를 트럭에 실어야하는데 번호가 다르면 보조로 감
-        // 보조 - 맨 위에서 꺼냄
-        Queue<Integer> queue = new LinkedList<>();
-        Stack<Integer> stack = new Stack<>();
-        int len = order.length;
+        int n = order.length;
+        // 컨테이너 1 ~ n까지 번호 증가 순 그리고 앞에서 부터 꺼내야함
+        Queue<Integer> con = new LinkedList<>();
+        // 보조는 마지막에 들어온걸 먼저 뺼 수 있음
+        Stack<Integer> sub = new Stack<>();
         
-        for(int i = 1 ; i <= len; i++){
-            queue.offer(i);
-        }
+        // 일단 n까지 다 넣어놓기
+        for(int i = 1; i <= n; i++){con.offer(i);}
         
-        for(int i = 0; i < len; i++){
+        // 그리고 이제 order에 맞는 값이 있으면 꺼내기
+        for(int i = 0; i < n; i++){
             boolean check = false;
-            // 보조 확인
-            if(stack.size() >= 1 && stack.peek() == order[i]) {
+            int num = order[i];
+            // 꺼내서 보관한 sub에 있는지
+            if(!sub.isEmpty() && sub.peek() == num){
                 answer++;
-                stack.pop();
+                sub.pop();
                 check = true;
             }
-            // 메인 확인
+            // 꺼낸게 기존 con에 있는지
             else{
-                while(!queue.isEmpty()){
-                    int num = queue.poll();
-                    if(num == order[i]){
-                        answer++;
-                        check = true;
-                        break;
-                    }
-                    else{
-                        stack.push(num);
-                    }
+                while(!con.isEmpty()){
+                    int c = con.poll();
+                    if(c == num){answer++; check= true; break;}
+                    else{sub.push(c);}
                 }
             }
-            if(!check) {break;}
+            if(!check){break;}
         }
         
         return answer;
