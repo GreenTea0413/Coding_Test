@@ -1,51 +1,47 @@
 import java.util.*;
+
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        // 5000 + ⌈(334 - 180) / 10⌉ x 600 = 14600
-        // [180, 5000, 10, 600]  기본시간, 기본 요금, 단위 시간(분), 단위 요금
+        // 차 번호, 차 들어오는 시간 <Integer, Integer>
+        // 차 번호, 총 시간 <Integer, Integer>
         
-        Map<String, Integer> inTime = new HashMap<>();   // 현재 입차시간
-        Map<String, Integer> totalTime = new TreeMap<>(); // 누적 주차시간
-
+        Map<String, Integer> times = new HashMap<>();
+        Map<String, Integer> total = new HashMap<>();
+        // fee 기본 시간, 기본 요금
         for(String record : records){
-            String[] s = record.split(" ");
-            int time = toMin(s[0]);
-            String carNum = s[1];
-            String status = s[2];
-
-            if(status.equals("IN")){
-                inTime.put(carNum, time);
-            } else {
-                int parked = time - inTime.get(carNum);
-                totalTime.put(carNum, totalTime.getOrDefault(carNum, 0) + parked);
-                inTime.remove(carNum);
+            String[] arr = record.split(" ");
+            int time = toMin(arr[0]);
+            String num = arr[1];
+            
+            if(arr[2].equals("IN")){
+                times.put(num, time);
+            }
+            else{
+                int rest = time - times.get(num);
+                total.put(num, total.getOrDefault(num, 0) + rest);
+                times.remove(num);
             }
         }
-
-        // 23:59에 아직 입차중인 차량 처리
-        for(String carNum : inTime.keySet()){
-            int parked = toMin("23:59") - inTime.get(carNum);
-            totalTime.put(carNum, totalTime.getOrDefault(carNum, 0) + parked);
+        
+        for(Map.Entry<String,Integer> entry : times.entrySet()){
+            int rest = toMin("23:59") - entry.getValue();
+            total.put(entry.getKey(), total.getOrDefault(entry.getKey(), 0) + rest);
         }
+        List<String> carNums = new ArrayList<>(total.keySet());
+        Collections.sort(carNums);
         
         List<Integer> answer = new ArrayList<>();
-        for(String carNum : totalTime.keySet()){
-            int parkedTime = totalTime.get(carNum);
-            int price;
-            if(parkedTime <= fees[0]){
-                price = fees[1];
-            } else {
-                price = fees[1] + (int)Math.ceil((double)(parkedTime - fees[0]) / fees[2]) * fees[3];
-            }
-            
-            answer.add(price);
+        for(String carNum: carNums){
+            int t = total.get(carNum);
+            int num = t - fees[0];
+            if(num > 0) answer.add(fees[1] + (int)Math.ceil((double)num / fees[2]) * fees[3]);
+            else answer.add(fees[1]);
         }
-        
         return answer.stream().mapToInt(i -> i).toArray();
     }
     
-    public int toMin(String time){
-        String[] s = time.split(":");
-        return Integer.parseInt(s[0]) * 60 + Integer.parseInt(s[1]);
+    public int toMin(String str){
+        String[] n = str.split(":");
+        return Integer.parseInt(n[0]) * 60 + Integer.parseInt(n[1]);
     }
 }
