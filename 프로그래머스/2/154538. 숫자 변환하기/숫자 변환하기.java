@@ -1,34 +1,32 @@
 import java.util.*;
+
 class Solution {
     public int solution(int x, int y, int n) {
-        Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[]{x, 0});
+        int answer = -1;
         
-        boolean[] v = new boolean[y + 1];        
+        Queue<int[]> q = new LinkedList<>();
+        boolean[] v = new boolean[y + 1];
+        
+        q.offer(new int[]{x, 0});
         v[x] = true;
         
         while(!q.isEmpty()){
-            int[] now = q.poll();
-            int cur = now[0];
-            int dist = now[1];
+            int[] arr = q.poll();
+            int num = arr[0], dist = arr[1];
             
-            if(cur == y) {
-                return dist;
-            }
+            if(num == y){return dist;}
             
-            if (cur + n <= y && !v[cur + n]) {
-                v[cur + n] = true; 
-                q.offer(new int[]{cur + n , dist + 1});
-            }
-            if (cur * 2 <= y && !v[cur * 2]) {
-                v[cur * 2] = true; 
-                q.offer(new int[]{cur * 2 , dist + 1});
-            }
-            if (cur * 3 <= y && !v[cur * 3]) {
-                v[cur * 3] = true; 
-                q.offer(new int[]{cur * 3 , dist + 1});
-            }
+            int num1 = num + n;
+            if(num1 <= y && !v[num1]){q.offer(new int[]{num1, dist + 1}); v[num1] = true;}
+            
+            int num2 = num * 2;
+            if(num2 <= y && !v[num2]){q.offer(new int[]{num2, dist + 1}); v[num2] = true;}
+            
+            int num3 = num * 3;
+            if(num3 <= y && !v[num3]){q.offer(new int[]{num3, dist + 1}); v[num3] = true;}
         }
-        return -1;
+        
+        
+        return answer;
     }
 }
