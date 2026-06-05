@@ -2,50 +2,40 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[] files) {
-
         Arrays.sort(files, (a, b) -> {
-            // 1. HEAD 분리
-            String headA = getHead(a);
-            String headB = getHead(b);
-
-            int headCompare = headA.toLowerCase().compareTo(headB.toLowerCase());
-            if(headCompare != 0) return headCompare;
-
-            // 2. NUMBER 비교
-            int numA = getNumber(a);
-            int numB = getNumber(b);
-
-            return numA - numB;
+            String head1 = getHead(a);
+            String head2 = getHead(b);
+            
+            int headCompared = head1.toLowerCase().compareTo(head2.toLowerCase());
+            if(headCompared != 0) return headCompared;
+            
+            int num1 = getNumber(a);
+            int num2 = getNumber(b);
+            
+            return num1 - num2;
         });
-
         return files;
     }
-
-    // HEAD 추출
-    private String getHead(String s){
+    
+    
+    public String getHead(String str){
         int i = 0;
-        while(i < s.length() && !Character.isDigit(s.charAt(i))){
+        while(i < str.length() && !Character.isDigit(str.charAt(i))){
             i++;
         }
-        return s.substring(0, i);
+        return str.substring(0, i);
     }
-
-    // NUMBER 추출
-    private int getNumber(String s){
+    
+    public int getNumber(String str){
         int i = 0;
-
-        // 숫자 시작 위치 찾기
-        while(i < s.length() && !Character.isDigit(s.charAt(i))){
+        while(i < str.length() && !Character.isDigit(str.charAt(i))){
             i++;
         }
-
+        
         int start = i;
-
-        // 숫자 최대 5자리
-        while(i < s.length() && Character.isDigit(s.charAt(i)) && i - start < 5){
+        while(i < str.length() && Character.isDigit(str.charAt(i)) && (i - start) < 5){
             i++;
         }
-
-        return Integer.parseInt(s.substring(start, i));
+        return Integer.parseInt(str.substring(start, i));
     }
 }
