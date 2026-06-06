@@ -1,38 +1,36 @@
 import java.util.*;
 
 class Solution {
-    public Set<Integer> set = new HashSet<>();
+    Set<Integer> set = new HashSet<>();
     public int solution(String numbers) {
-        int answer = 0;
         int len = numbers.length();
-        boolean[] v= new boolean[len];
-        permutate(numbers, v, "");
+        char[] c = numbers.toCharArray();
         
+        permute(c, new boolean[len], "");
+        
+        int answer = 0;
         for(int n : set){
             if(isPrime(n)) answer++;
         }
         return answer;
     }
     
-    public void permutate(String numbers, boolean[] v, String now){
-        if(!now.equals("")) {
-            set.add(Integer.parseInt(now));
-        }
+    void permute(char[] c, boolean[] v, String now){
+        if(!now.equals("")) set.add(Integer.parseInt(now));
         
-        for(int i = 0 ; i < numbers.length(); i++){
+        for(int i = 0; i < c.length; i++){
             if(!v[i]){
                 v[i] = true;
-                permutate(numbers, v, now + numbers.charAt(i));
-                v[i] = false;
+                permute(c, v, now + String.valueOf(c[i]));
+                v[i] = false;                
             }
         }
     }
-    public boolean isPrime(int num){
-        if(num < 2) return false;
-        for(int i = 2; i <= Math.sqrt(num); i++){
-            if(num % i == 0) {
-                return false;
-            }
+    
+    boolean isPrime(int n){
+        if(n < 2) return false;
+        for(int i = 2; i <= Math.sqrt(n); i++){
+            if(n % i == 0) return false;
         }
         return true;
     }
