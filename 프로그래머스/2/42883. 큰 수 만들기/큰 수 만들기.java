@@ -2,31 +2,18 @@ import java.util.*;
 
 class Solution {
     public String solution(String number, int k) {
-        String answer = "";
-        String[] num = number.split("");
-        Stack<Integer> q = new Stack<>();
+        StringBuilder sb = new StringBuilder();
         
-        for(String n : num){
-            while(k > 0 && !q.isEmpty() && q.peek() < Integer.parseInt(n)){
-                q.pop();
+        for(char n : number.toCharArray()){
+            while(k > 0 && sb.length() > 0 && sb.charAt(sb.length() - 1) < n){
+                sb.deleteCharAt(sb.length() - 1);
                 k--;
             }
-            q.push(Integer.parseInt(n));
+            
+            sb.append(n);
         }
         
-        
-        for(int i = 0; i < k; i++){
-            q.pop();
-        }
-        
-        String temp = "";
-        while(!q.isEmpty()){
-            temp += String.valueOf(q.pop());
-        }
-        
-        for(int i = temp.length() - 1; i >= 0; i--){
-            answer += String.valueOf(temp.charAt(i));
-        }
-        return answer;
+        sb.delete(sb.length() - k, sb.length());
+        return sb.toString();
     }
 }
