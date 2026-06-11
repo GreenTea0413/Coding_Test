@@ -2,29 +2,31 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int n) {
+        int[][] dir = {{1,0}, {0,1}, {-1,-1}};
         List<Integer> answer = new ArrayList<>();
-        int[][] d = {{1,0}, {0,1}, {-1,-1}};
-        int[][] maps = new int[n][n];
+        
+        int[][] arr = new int[n][n];
+        int d = 0;
         int x = -1;
         int y = 0;
-        int num = 1;
-        int dir = 0;
-        
-        for(int i = n; i > 0; i--){
-            for(int j = 0; j < i; j++){
-                x += d[dir][0];
-                y += d[dir][1];
-                maps[x][y] = num++;
+        int count = 1;
+        int k = n;
+        while(k > 0){
+            for(int i = 0; i < k; i++){
+                x += dir[d][0];
+                y += dir[d][1];
+                arr[x][y] = count;
+                count++;
             }
-            dir = (dir + 1) % 3;
+            k--;
+            d = (d + 1) % 3;
         }
         
-        
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j <= i; j++){
-                answer.add(maps[i][j]);
+        for(int i = 0 ; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(arr[i][j] != 0){answer.add(arr[i][j]);}
             }
         }
-        return answer.stream().mapToInt(i -> i).toArray();
+        return answer.stream().mapToInt(i->i).toArray();
     }
 }
