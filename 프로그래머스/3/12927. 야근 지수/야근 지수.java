@@ -3,26 +3,26 @@ import java.util.*;
 class Solution {
     public long solution(int n, int[] works) {
         long answer = 0;
-        // 남은 일의 제곱량의 합
-        // n은 내가 지금 할 수 있는 작업
-        // 그러면 works에 값에서 n만큼 빼서 최솟값을 반환
-        // [4, 3, 3] -> [2, 2, 2] -> 12
+        long total = 0;
+        int len = works.length;
         
-        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {return b-a;});
-        for(int work : works){
-            pq.offer(work);
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {return b - a;});
+        for(int w : works){
+            total += w; 
+            pq.offer(w);
         }
+        
+        if(total < n) return 0;
         
         while(n > 0){
             int num = pq.poll();
-            
-            if(num == 0) break;
-            pq.offer(num - 1);
-            n--;
+            num -= 1;
+            pq.offer(num);
+            n --;
         }
         
-        for(int num : pq){
-            answer += num * num;
+        for(int p : pq){
+            answer += p * p;
         }
         return answer;
     }
