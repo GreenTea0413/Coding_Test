@@ -1,41 +1,46 @@
 import java.util.*;
+
 class Solution {
-    Set<Set<String>> result = new HashSet<>();
-    
+    Set<Set<String>> ban = new HashSet<>();
     public int solution(String[] user_id, String[] banned_id) {
-        boolean[] v = new boolean[user_id.length];
-        dfs(user_id, banned_id, v, 0, new HashSet<>());
-        return result.size();
+        int len = user_id.length;
+        boolean[] v = new boolean[len];
+        
+        dfs(v, user_id, banned_id, 0, new HashSet<>());
+        return ban.size();
     }
     
-    public void dfs(String[] user_id, String[] bannded_id, boolean[] v, int depth, Set<String> current){
-        if(depth == bannded_id.length){
-            result.add(new HashSet<>(current));
+    public void dfs(boolean[] v, String[] user_id, String[] banned_id, int depth, Set<String> cur){
+        if(depth == banned_id.length) {
+            ban.add(new HashSet<>(cur));
             return;
         }
         
-        for(int i = 0; i < user_id.length; i++){
-            if (v[i]) continue;
-            
-            if(match(user_id[i], bannded_id[depth])){
-                v[i] = true;
-                current.add(user_id[i]);
-                
-                dfs(user_id, bannded_id, v, depth + 1, current);
-                
-                v[i] = false;
-                current.remove(user_id[i]);
+        
+        for(int j = 0; j < user_id.length; j++){
+            if(!v[j]){
+                if(isCheck(user_id[j], banned_id[depth])){
+                    v[j] = true;    
+                    cur.add(user_id[j]);
+                    dfs(v, user_id, banned_id, depth + 1, cur);
+
+                    v[j] = false;
+                    cur.remove(user_id[j]);
+                }
             }
         }
+        
     }
     
-    public boolean match(String s1, String s2){
-        if (s1.length() != s2.length()) return false;
-        
-        for(int i = 0; i < s1.length(); i++){
-            if(s2.charAt(i) == '*') continue;
-            if(s1.charAt(i) != s2.charAt(i)) return false;
+    public boolean isCheck(String a, String b){
+        if(a.length() != b.length()) return false;
+        for(int i = 0; i < a.length(); i++){
+            if(b.charAt(i) == '*') continue;
+            if(a.charAt(i) != b.charAt(i)){
+                return false;
+            }
         }
+        
         return true;
     }
 }
