@@ -2,42 +2,40 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int[][] edge) {
-        int max_dist = 0;
-        int count = 0;
+        int answer = 0;
+        int len = 0;
         
-        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i <= n; i++){
-            graph.add(new ArrayList<>());
-        }
-        
-        for (int[] e : edge){
+        List<List<Integer>> graph = new ArrayList<>();
+        for(int i = 0; i <= n; i++){graph.add(new ArrayList<>());}
+        for(int[] e : edge){
             graph.get(e[0]).add(e[1]);
             graph.get(e[1]).add(e[0]);
         }
         
-        Queue<int[]> q = new LinkedList<>();
         boolean[] v = new boolean[n + 1];
         v[1] = true;
-        q.offer(new int[]{1,0});
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{1, 1});
         
-        while (!q.isEmpty()){
-            int[] now = q.poll();
+        while(!q.isEmpty()){
+            int[] arr = q.poll();
+            int node = arr[0];
+            int dist = arr[1];
             
-            if (now[1] > max_dist){
-                max_dist = now[1];
-                count = 1;
-            }
-            else if (now[1] == max_dist){
-                count += 1;
-            }
+            // 길이가 len 보다 길면 len = dist로 바꾸고 answer =1;
+            // 길이가 len이랑 같으면 answer++;
             
-            for(int next : graph.get(now[0])){
+            if(len < dist) {len = dist; answer = 1; }
+            else if(len == dist){answer++;}
+            for(int next : graph.get(node)){
                 if(!v[next]){
                     v[next] = true;
-                    q.offer(new int[]{next, now[1] + 1});
+                    q.offer(new int[]{next, dist + 1});
                 }
             }
         }
-        return count;
+        
+        
+        return answer;
     }
 }
