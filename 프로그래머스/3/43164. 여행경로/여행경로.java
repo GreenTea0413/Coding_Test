@@ -2,11 +2,11 @@ import java.util.*;
 
 class Solution {
     String[] answer;
-    int count;
+    int len;
     boolean found = false;
     public String[] solution(String[][] tickets) {
-        count = tickets.length;
-        answer = new String[count + 1];
+        len = tickets.length;
+        answer = new String[len + 1];
         
         Map<String, List<Integer>> map = new HashMap<>();
         for(int i = 0; i < tickets.length; i++){
@@ -19,20 +19,19 @@ class Solution {
             Collections.sort(list, (a, b) -> tickets[a][1].compareTo(tickets[b][1]));
         }
         
-        String[] path = new String[count + 1];
-        boolean[] v = new boolean[count + 1];
+        String[] path = new String[len + 1];
+        boolean[] v = new boolean[len + 1];
         path[0] = "ICN";
- 
-        
+
         dfs(map, tickets, path, v, 0, "ICN");
         
         return answer;
     }
     
     public void dfs(Map<String, List<Integer>> map, String[][] tickets, String[] path, boolean[] v, int depth, String now){
-        if(count == depth){
-            found = true;
+        if(depth == len){
             answer = path.clone();
+            found = true;
             return;
         }
         
