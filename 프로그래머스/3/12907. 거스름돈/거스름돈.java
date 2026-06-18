@@ -1,16 +1,15 @@
-import java.util.*;
-
 class Solution {
-    
     public int solution(int n, int[] money) {
-        int MOD = 1000000007;
-        int[] dp = new int[n+1];
+        int answer = 0;
+        int[] dp = new int[n + 1];
         dp[0] = 1;
-        for(int coin : money){
-            for(int i = coin; i <= n; i++){
-                dp[i] = (dp[i] + dp[i - coin]) % MOD;
+        
+        for(int m : money){
+            for(int i = m; i <= n; i++){
+                dp[i] = (dp[i] + dp[i - m]) % 1000000007;
             }
         }
+        
         return dp[n];
     }
 }
