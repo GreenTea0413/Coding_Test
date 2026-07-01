@@ -1,58 +1,51 @@
+import java.util.*;
+
 class Solution {
     public String solution(String play_time, String adv_time, String[] logs) {
-        int playSec = strToInt(play_time);
-        int advSec = strToInt(adv_time);
-        long[] delta = new long[playSec + 1];
+        int play = (int)toNum(play_time);
+        int adv = (int)toNum(adv_time);
+        long[] arr = new long[play + 1];
         
         for(String log : logs){
-            String[] sp = log.split("-");
-            int start = strToInt(sp[0]);
-            int end = strToInt(sp[1]);
-            delta[start] ++;
-            delta[end] --;
+            String[] s = log.split("-");
+            int start = (int)toNum(s[0]);
+            int end = (int)toNum(s[1]);
+            
+            arr[start] ++;
+            arr[end] --;
         }
         
-        for(int i = 1; i < delta.length; i++){
-            delta[i] = delta[i - 1] + delta[i];
+        // 누적합으로 시청하는 사람 구하기
+        for(int i = 1; i <= play; i++){
+            arr[i] += arr[i - 1];
         }
-        for(int i = 1; i < delta.length; i++){
-            delta[i] = delta[i - 1] + delta[i];
+        // 누적합으로 시간 구하기
+        for(int i = 1; i <= play; i++){
+            arr[i] += arr[i - 1];
         }
         
-        int start = 0;
-        long end = delta[advSec - 1];
+        long max = arr[adv - 1];
+        long startTime = 0;
         
-        for(int i = 1; i < playSec - advSec + 1; i++){
-            if(end < delta[i + advSec] - delta[i]){
-                end = delta[i + advSec] - delta[i];
-                start = i + 1;
+        for(int end = adv; end < play; end++){
+            long cur = arr[end]  - arr[end - adv];
+            
+            if(cur > max){
+                max = cur;
+                startTime = end - adv + 1;
             }
         }
-        return intToStr(start);
+        
+        int h = (int)(startTime / 3600);
+        int m = (int)(startTime % 3600) / 60;
+        int s = (int)(startTime % 60);
+        
+        return String.format("%02d:%02d:%02d",h,m,s);
     }
     
-    int strToInt(String str){
-        String[] sp =  str.split(":");
+    public long toNum(String s){
+        String[] st = s.split(":");
         
-        int h = Integer.parseInt(sp[0]);
-        int m = Integer.parseInt(sp[1]);
-        int s = Integer.parseInt(sp[2]);
-        
-        return h * 3600 + 60 * m + s;
-    }
-    
-    String intToStr(int num){
-        String sec = String.valueOf(num % 60);
-        if(sec.length() == 1) sec = "0" + sec;
-        num = num / 60;
-        
-        String min = String.valueOf(num % 60);
-        if(min.length() == 1) min = "0" + min;
-        num = num / 60;
-        
-        String hour = String.valueOf(num);
-        if(hour.length() == 1) hour = "0" + hour;
-    
-        return hour + ":" + min + ":" + sec;
+        return Long.parseLong(st[0]) * 3600 + Long.parseLong(st[1]) * 60 + Long.parseLong(st[2]);
     }
 }
