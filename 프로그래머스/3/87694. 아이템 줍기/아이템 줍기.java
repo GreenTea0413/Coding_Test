@@ -5,7 +5,7 @@ class Solution {
         int answer = 0;
         int[][] board = new int[102][102];
         
-        // 테두리만 이렇게 칠하기
+        // 테두리 만들기
         for(int[] rec : rectangle){
             int x1 = rec[0] * 2;
             int y1 = rec[1] * 2;
@@ -19,7 +19,7 @@ class Solution {
             }
         }
         
-        // 구멍 뚫기
+        // 테두리 선만 남기고 안에 없애기
         for(int[] rec : rectangle){
             int x1 = rec[0] * 2;
             int y1 = rec[1] * 2;
@@ -36,23 +36,28 @@ class Solution {
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{characterX * 2, characterY * 2, 0});
         boolean[][] v = new boolean[102][102];
-        int[][] d = {{1,0}, {0,1}, {0,-1},{-1,0}};
+        
+        int[][] d = {{1,0}, {0,1}, {-1,0}, {0,-1}};
         while(!q.isEmpty()){
-            int[] now = q.poll();
-            int x = now[0], y = now[1], dist = now[2];
+            int[] cur = q.poll();
             
-            if (x == itemX * 2 && y == itemY * 2) return dist / 2;
-            if (v[x][y]) continue;
+            if(cur[0] == itemX * 2 && cur[1] == itemY * 2){
+                return cur[2] / 2;
+            }
+            if(v[cur[0]][cur[1]]) continue;
+            v[cur[0]][cur[1]] = true;
             
-            v[x][y] = true;
             for(int i = 0; i < 4; i++){
-                int nx = x + d[i][0], ny = y + d[i][1];
-                if(0 <= nx && nx < 102 && 0 <= ny && ny < 102 && board[nx][ny] == 1){
-                    q.offer(new int[]{nx, ny, dist + 1});
+                int nx = cur[0] + d[i][0];
+                int ny = cur[1] + d[i][1];
+                if(nx < 0 || nx > 101 || ny < 0 || ny > 101) continue;
+                if(!v[nx][ny] && board[nx][ny] == 1){
+                    q.offer(new int[]{nx, ny, cur[2] + 1});
                 }
             }
-            
         }
+        
+        
         return answer;
     }
 }
