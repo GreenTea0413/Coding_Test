@@ -3,33 +3,35 @@ import java.util.*;
 class Solution {
     public int[] solution(String[] operations) {
         int[] answer = new int[2];
-        PriorityQueue<Integer> maxQ = new PriorityQueue<>((a, b) -> {return b - a;});
-        PriorityQueue<Integer> minQ = new PriorityQueue<>();
+        
+        PriorityQueue<Integer> maxP = new PriorityQueue<>((a, b) -> (b - a));
+        PriorityQueue<Integer> minP = new PriorityQueue<>();
         
         for(String op : operations){
-            String[] arr = op.split(" ");
-            int num = Integer.valueOf(arr[1]);
-            if(arr[0].equals("I")){
-                maxQ.offer(num);
-                minQ.offer(num);
+            String[] s = op.split(" ");
+            int n = Integer.parseInt(s[1]);
+            
+            if(s[0].equals("I")){
+                maxP.offer(n);
+                minP.offer(n);
             }
             else{
-                if(!maxQ.isEmpty()){
-                    if(num == 1){
-                        int temp = maxQ.poll();
-                        minQ.remove(Integer.valueOf(temp));
-                    }
-                    else{
-                        int temp = minQ.poll();
-                        maxQ.remove(Integer.valueOf(temp));
-                    }
+                if(maxP.isEmpty()) continue;
+                if(n == 1){
+                    int m = maxP.poll();
+                    minP.remove(Integer.valueOf(m));
+                }
+                else{
+                    int m = minP.poll();
+                    maxP.remove(Integer.valueOf(m));
                 }
             }
         }
         
-        if(maxQ.size() == 0) return answer;
-        answer[0] = maxQ.poll();
-        answer[1] = minQ.poll();
+        if(!maxP.isEmpty()){
+            answer[0] = maxP.poll();
+            answer[1] = minP.poll();
+        }
         return answer;
     }
 }
