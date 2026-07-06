@@ -1,15 +1,19 @@
 class Solution {
     public int solution(int[][] triangle) {
         int answer = 0;
-        int xLen = triangle.length - 1;
+        int len = triangle.length;
         
-        for(int i = xLen; i > 0; i--){
-            int yLen = triangle[i].length;
-            for(int j = 0; j < yLen - 1; j++){
-                triangle[i - 1][j] = Math.max(triangle[i][j], triangle[i][j + 1]) + triangle[i - 1][j];
+        int[] dp = new int[len];
+        for(int i = 0; i < len; i++){
+            dp[i] = triangle[len-1][i];
+        }
+        // 4 5 2 6 5
+        
+        for(int depth = len - 2; depth >= 0; depth--){
+            for(int i = 0; i < triangle[depth].length; i++){
+                dp[i] = Math.max(dp[i], dp[i + 1]) + triangle[depth][i];
             }
         }
-        
-        return triangle[0][0];
+        return dp[0];
     }
 }
