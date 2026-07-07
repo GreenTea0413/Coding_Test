@@ -5,20 +5,23 @@ class Solution {
         int answer = 0;
         Arrays.sort(A);
         Arrays.sort(B);
+        // 5 1 3 7 -> 1 3 5 7
+        // 2 2 6 8 -> 2 2 6 8
         
-        int i = 0;
-        int j = 0;
+        int aIdx = 0;
+        int bIdx = 0;
         
-        while(i < A.length && j < B.length){
-            if(A[i] < B[j]){
-                i++;
-                j++;
+        while(bIdx < B.length){
+            if(A[aIdx] < B[bIdx]){
+                aIdx++;
+                bIdx++;
                 answer++;
             }
             else{
-                j++;
+                bIdx++;
             }
         }
+        
         return answer;
     }
 }
