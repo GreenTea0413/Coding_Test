@@ -1,30 +1,29 @@
-import java.util.*;
-
 class Solution {
     public int solution(int m, int n, int[][] puddles) {
-        int MOD = 1000000007;
+        int[][] dp = new int[n + 1][m + 1];
         
-        int[][] dp = new int[n][m];
-        for(int[] p : puddles){dp[p[1] - 1][p[0] - 1] = -1;}
-        for(int i = 0; i < m; i++){if(dp[0][i] == -1) break; dp[0][i] = 1;}
-        for(int i = 0; i < n; i++){if(dp[i][0] == -1) break; dp[i][0] = 1;}
+        for(int[] p : puddles) dp[p[1]][p[0]] = -1;
         
-        // 1111
-        // 1
-        // 1
-        for(int i = 1; i < n; i++){
-            for(int j = 1; j < m; j++){
-                if(dp[i][j] == -1){
-                    dp[i][j] = 0;
-                    continue;
-                }
-                
-                int left = dp[i][j - 1] > 0 ? dp[i][j - 1]: 0;
-                int up = dp[i - 1][j] > 0 ? dp[i - 1][j] : 0;
-                dp[i][j] = (left + up) % MOD;
-            }
+        for(int i = 1; i < m + 1; i++){
+            if(dp[1][i] == -1) break; 
+            dp[1][i] = 1;
         }
         
-        return dp[n - 1][m - 1];
+        for(int i = 1; i < n + 1; i++){
+            if(dp[i][1] == -1) break; 
+            dp[i][1] = 1;
+        }
+        
+        for(int i = 2; i < n + 1; i++){
+            for(int j = 2; j < m + 1; j++){
+                // 해당 위치가 -1이면 continue; 아니면 이제 위쪽 왼쪽에 값 더하기
+                if(dp[i][j] == -1) {dp[i][j] = 0; continue;}
+                int left = dp[i][j - 1] > 0 ? dp[i][j - 1] : 0;
+                int up = dp[i - 1][j] > 0 ? dp[i - 1][j] : 0;
+                
+                dp[i][j] = (left + up) %1000000007;
+            }
+        }
+        return dp[n][m];
     }
 }
