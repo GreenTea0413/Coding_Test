@@ -4,33 +4,35 @@ class Solution {
     public int[] solution(int n, int[][] roads, int[] sources, int destination) {
         int len = sources.length;
         int[] answer = new int[len];
-        
         List<List<Integer>> graph = new ArrayList<>();
         for(int i = 0; i <= n; i++){graph.add(new ArrayList<>());}
-        for(int[] r : roads){graph.get(r[0]).add(r[1]); graph.get(r[1]).add(r[0]);}
+        for(int[] r : roads){
+            graph.get(r[0]).add(r[1]);
+            graph.get(r[1]).add(r[0]);
+        }
         
         for(int i = 0; i < len; i++){
+            int s = sources[i];
             Queue<int[]> q = new LinkedList<>();
-            boolean[] v = new boolean[n + 1];
-            q.offer(new int[]{sources[i], 0});
-            v[sources[i]] = true;
-            boolean isCheck = false;
+            q.offer(new int[]{s, 0});
+            int[] v = new int[n + 1];
+            Arrays.fill(v, -1);
+            v[s] = 0;
+            
             while(!q.isEmpty()){
-                int[] arr = q.poll();
-                int node = arr[0];
-                int dist = arr[1];
+                int[] now = q.poll();
+                int w = now[0];
+                int d = now[1];
+                if(v[destination] != -1) break;
                 
-                if(node == destination){answer[i] = dist; isCheck = true; break;}
-                
-                for(int next : graph.get(node)){
-                    if(!v[next]){
-                        v[next] = true;
-                        q.offer(new int[]{next, dist + 1});
+                for(int next : graph.get(w)){
+                    if(v[next] == -1){
+                        v[next] = d + 1;
+                        q.offer(new int[]{next, d + 1});
                     }
                 }
             }
-            
-            if(!isCheck){answer[i] = -1;}
+            answer[i] = v[destination];
         }
         return answer;
     }
