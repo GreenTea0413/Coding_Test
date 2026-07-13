@@ -2,9 +2,6 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int[][] edge) {
-        int answer = 0;
-        int len = 0;
-        
         List<List<Integer>> graph = new ArrayList<>();
         for(int i = 0; i <= n; i++){graph.add(new ArrayList<>());}
         for(int[] e : edge){
@@ -12,30 +9,37 @@ class Solution {
             graph.get(e[1]).add(e[0]);
         }
         
-        boolean[] v = new boolean[n + 1];
-        v[1] = true;
+        // 1부터 돌면서 다음 지점까지의 거리를 기록해놓고 젤 높은 숫자에 해당하는 값들의 수
         Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[]{1, 1});
+        q.offer(new int[]{1, 0});
         
+        // arr들까지의 거리를 나타내는 배열
+        int[] arr = new int[n + 1];
+        Arrays.fill(arr, -1);
+        arr[1] = 0;
+        
+        // 1부터 시작 하니까 거리0 으로 하고 하나씩 값 넣어주기
         while(!q.isEmpty()){
-            int[] arr = q.poll();
-            int node = arr[0];
-            int dist = arr[1];
+            int[] now = q.poll();
+            int w = now[0];
+            int d = now[1];
             
-            // 길이가 len 보다 길면 len = dist로 바꾸고 answer =1;
-            // 길이가 len이랑 같으면 answer++;
-            
-            if(len < dist) {len = dist; answer = 1; }
-            else if(len == dist){answer++;}
-            for(int next : graph.get(node)){
-                if(!v[next]){
-                    v[next] = true;
-                    q.offer(new int[]{next, dist + 1});
+            for(int next : graph.get(w)){
+                if(arr[next] == -1){
+                    arr[next] = d + 1;
+                    q.offer(new int[]{next, d + 1});
                 }
             }
         }
-        
-        
+        int max = 0;
+        for(int i = 1; i <= n; i++){
+            max = Math.max(max, arr[i]);
+        }
+
+        int answer = 0;
+        for(int i = 1; i <= n; i++){
+            if(arr[i] == max) answer++;
+        }
         return answer;
     }
 }
