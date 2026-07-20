@@ -1,62 +1,54 @@
 import java.util.*;
 
 class Solution {
-    static class Node{
-        int to;
-        int cost;
-        
-        Node(int to, int cost){
-            this.to = to;
-            this.cost = cost;
-        }
-    }
-    
-    List<Node>[] graph;
     public int solution(int n, int s, int a, int b, int[][] fares) {
-        graph = new ArrayList[n + 1];
-        
-        for(int i = 0; i <= n; i++){graph[i] = new ArrayList<>();}
-        
-        for(int[] fare : fares){
-            graph[fare[0]].add(new Node(fare[1], fare[2]));
-            graph[fare[1]].add(new Node(fare[0], fare[2]));
+        int answer = Integer.MAX_VALUE;
+        List<List<int[]>> graph = new ArrayList<>();
+        for(int i = 0; i <= n; i++){graph.add(new ArrayList<>());}
+        for(int[] f : fares){
+            graph.get(f[0]).add(new int[]{f[1], f[2]});
+            graph.get(f[1]).add(new int[]{f[0], f[2]});
         }
         
-        int[] distS = dijkstra(n, s);
-        int[] distA = dijkstra(n, a);
-        int[] distB = dijkstra(n, b);
+        // 시작은 s
+        // 도착은 a, b 둘다 해야하는 상황
+        // 시작점 s, a, b에 대한 모든 거리의 최소를 구하기
+        int[] sn = dijkstra(s, graph, n);
+        int[] an = dijkstra(a, graph, n);
+        int[] bn = dijkstra(b, graph, n);
         
-        int answer = Integer.MAX_VALUE;
-        for (int k = 1; k <= n; k++) {
-            answer = Math.min(answer, distS[k] + distA[k] + distB[k]);
+        for(int i = 1; i <= n; i++){
+            answer = Math.min(answer, sn[i] + an[i] + bn[i]);
         }
         
         return answer;
     }
     
-    public int[] dijkstra(int n, int start){
+    
+    public int[] dijkstra(int start, List<List<int[]>> graph, int n){
         int[] dist = new int[n + 1];
         Arrays.fill(dist, Integer.MAX_VALUE);
         
-        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> {return a.cost - b.cost;});
+        // 점, 거리
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (a[1] - b[1]));
+        pq.offer(new int[]{start, 0});
         dist[start] = 0;
-        pq.offer(new Node(start, 0));        
         
         while(!pq.isEmpty()){
-            Node now = pq.poll();
+            int[] now = pq.poll();
+            int l = now[0];
+            int d = now[1];
             
-            if(now.cost > dist[now.to]){continue;}
+            if(dist[l] < d){continue;}
             
-            for(Node next : graph[now.to]){
-                int nextCost = now.cost + next.cost;
-                
-                if(nextCost < dist[next.to]){
-                    dist[next.to] = nextCost;
-                    pq.offer(new Node(next.to, nextCost));
+            for(int[] next : graph.get(l)){
+                int nextDist = next[1] + d;
+                if(dist[next[0]] > nextDist){
+                    dist[next[0]] = nextDist;
+                    pq.offer(new int[]{next[0], nextDist});
                 }
             }
         }
-        
         return dist;
     }
 }
