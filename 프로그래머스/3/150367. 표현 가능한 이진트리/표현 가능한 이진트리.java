@@ -3,9 +3,10 @@ class Solution {
         int len = numbers.length;
         int[] answer = new int[len];
         
-        for(int i = 0; i < len; i++){
+        for(int i = 0 ; i < len; i++){
             String bin = Long.toBinaryString(numbers[i]);
             
+            // 트리는 꽉 채우는걸로 해야하고 차피 비어있으면 그만큼 + 0 해주면 됨
             int size = 1;
             while(size < bin.length()){
                 size = size * 2 + 1;
@@ -15,25 +16,23 @@ class Solution {
                 bin = "0" + bin;
             }
             
+            // 이러면 원래 7이면 111이니까 size 가 3일 때 안돌아감
+            // 0 추가되는거 없이
             answer[i] = check(bin, 0, size - 1) ? 1 : 0;
         }
         return answer;
     }
     
-    // 여기서 이제 말도 안되는 루트가 있으면 false;
-    boolean check(String s, int left, int right){
+    boolean check(String bin, int left, int right){
         if(left == right) return true;
-        
         int mid = (left + right) / 2;
-        char root = s.charAt(mid);
-        
-        if(root == '0'){
+                
+        if(bin.charAt(mid) == '0'){
             int leftMid = (left + mid - 1) / 2;
             int rightMid = (right + mid + 1) / 2;
-            
-            if(s.charAt(leftMid) == '1' || s.charAt(rightMid) == '1'){return false;}
+            if(bin.charAt(leftMid) == '1' || bin.charAt(rightMid) == '1') return false;
         }
         
-        return check(s, left, mid - 1) && check(s, mid + 1, right);
+        return check(bin, left, mid - 1) && check(bin, mid + 1, right);
     }
 }
