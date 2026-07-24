@@ -1,25 +1,27 @@
 import java.util.*;
-
 class Solution {
     int answer = Integer.MAX_VALUE;
-    int wLen;
+    int w;
     public int solution(int n, int[] weak, int[] dist) {
-        wLen = weak.length;
-        int[] weak2 = new int[wLen * 2];
-        
-        for(int i = 0; i < wLen * 2; i++){
-            weak2[i] = weak[i % wLen] + n * (i / wLen);
+        // n미터
+        // 사람마다 1시간당 거리
+        w = weak.length;
+        int[] weak2 = new int[w * 2];
+        for(int i = 0; i < w; i++){
+            weak2[i] = weak[i];
+            weak2[i + w] = weak[i] + n;
         }
-        
-        dfs(dist, weak2, new ArrayList<>(), new boolean[dist.length]);
+
+        // 친구 순서를 고려해서 풀어야함
+        dfs(n, weak2, dist, new boolean[dist.length], new ArrayList<>());
         return answer == Integer.MAX_VALUE ? -1 : answer;
     }
     
-    public void dfs(int[] dist, int[] weak2, List<Integer> per, boolean[] v){
-        if(dist.length == per.size()){
-            for(int i = 0; i < wLen; i++){
-                int count = check(i, per, weak2);
-                
+    public void dfs(int n, int[] weak2, int[] dist, boolean[] v, List<Integer> friend){
+        if(dist.length == friend.size()){
+            // 같아지면 이제 여기서 확인
+            for(int i = 0; i < w; i++){
+                int count = check(weak2, i, friend) ;
                 if(count != -1){answer = Math.min(answer, count);}
             }
             return;
@@ -27,29 +29,29 @@ class Solution {
         
         for(int i = 0; i < dist.length; i++){
             if(!v[i]){
+                friend.add(dist[i]);
                 v[i] = true;
-                per.add(dist[i]);
                 
-                dfs(dist, weak2, per, v);
+                dfs(n, weak2, dist, v, friend);
+                
+                friend.remove(friend.size() - 1);
                 v[i] = false;
-                per.remove(per.size() - 1);
             }
         }
     }
-    
-    public int check(int start, List<Integer> per, int[] weak2){
-        int friend = 0;
-        int loc = weak2[start] + per.get(friend);
-        
-        for(int i = start; i < start + wLen; i++){
-            if (weak2[i] > loc) {
-                friend++;
-                if (friend == per.size()) {
-                    return -1;
-                }
-                loc = weak2[i] + per.get(friend);
+    // friend가 4 3 2 1
+    public int check(int[] weak2, int start, List<Integer> friend){
+        int f = 0;
+        int cur = weak2[start] + friend.get(f); // 1
+        // start지점으로 부터 w개수 만큼만 진행
+        for(int i = start; i < start + w; i++){
+            // 이러면 1 5 6 10 / 5 6 10 11 / ... 가능
+            if(weak2[i] > cur){
+                f++;
+                if(f == friend.size()){return -1;}
+                cur = weak2[i] + friend.get(f);
             }
         }
-        return friend + 1;
+        return f + 1;
     }
 }
