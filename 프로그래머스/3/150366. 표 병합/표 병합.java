@@ -1,96 +1,88 @@
 import java.util.*;
 
 class Solution {
-    int[] parents = new int[2501];
-    String[] values = new String[2501];
+    int[] parent = new int[2501];
+    String[] child = new String[2501];
     
-    public int find(int x){
-        if(parents[x] == x){return x;}
-        parents[x] = find(parents[x]);
-        return parents[x];
+    int find(int x){
+        if(parent[x] == x) return x;
+        parent[x] = find(parent[x]);
+        return parent[x];
     }
     
-    public void union(int x, int y){
-        if(x != y){parents[y] = x;}
+    void union(int x, int y){
+        if(x != y) parent[y] = x;
+    }
+    
+    int toNum(String x, String y){
+        return (Integer.parseInt(x) - 1) * 50 + Integer.parseInt(y) - 1;
     }
     
     public String[] solution(String[] commands) {
+        List<String> answer = new ArrayList<>();
+        
         for(int i = 0; i < 2500; i++){
-            parents[i] = i;
-            values[i] = null;
+            parent[i] = i;
+            child[i] = null;
         }
         
-        List<String> answer = new ArrayList<>();  
         for(String c : commands){
             String[] arr = c.split(" ");
-            String com = arr[0];
             
-            if(com.equals("UPDATE")){
-                // r c value
+            if(arr[0].equals("UPDATE")){
                 if(arr.length == 4){
-                    int id = toNum(arr[1], arr[2]);
-                    int root = find(id);
-                    values[root] = arr[3];
+                    int idx = toNum(arr[1], arr[2]);
+                    child[find(idx)] = arr[3];
                 }
-                
-                // value1 value2
                 else{
                     for(int i = 0; i < 2500; i++){
-                        if(find(i) == i && values[i] != null && values[i].equals(arr[1])){
-                            values[i] = arr[2];
+                        if(find(i) == i && child[i] != null && child[i].equals(arr[1])){
+                            child[parent[i]] = arr[2];
                         }
                     }
                 }
             }
-            else if(com.equals("MERGE")){
-                // r1 c1 r2 c2
-                int id1 = toNum(arr[1], arr[2]);
-                int id2 = toNum(arr[3], arr[4]);
+            else if(arr[0].equals("MERGE")){
+                int idx1 = toNum(arr[1], arr[2]);
+                int idx2 = toNum(arr[3], arr[4]);
                 
-                int root1 = find(id1);
-                int root2 = find(id2);
+                int root1 = find(idx1);
+                int root2 = find(idx2);
                 
                 if(root1 != root2){
-                    String v1 = values[root1];
-                    String v2 = values[root2];
+                    String c1 = child[root1];
+                    String c2 = child[root2];
                     
                     union(root1, root2);
-                    
-                    values[root1] = (v1 != null) ?  v1 : v2;
+                    child[root1] = (c1 != null) ? c1 : c2;
                 }
             }
-            else if(com.equals("UNMERGE")){
-                // r c
-                int id = toNum(arr[1], arr[2]);
-                int root = find(id);
-                String v = values[root];
+            else if(arr[0].equals("UNMERGE")){
+                int idx = toNum(arr[1], arr[2]);
+                int root = find(idx);
+                String c1 = child[root];
                 List<Integer> cells = new ArrayList<>();
                 
-                for(int i = 0; i < 2500; i++){
+                for(int i = 0; i < 2501; i++){
                     if(find(i) == root){
                         cells.add(i);
                     }
                 }
                 
                 for(int cell : cells){
-                    parents[cell] = cell;
-                    values[cell] = null;
+                    parent[cell] = cell;
+                    child[cell] = null;
                 }
-                values[id] = v;
+                
+                child[idx] = c1;
             }
-            else if(com.equals("PRINT")){
-                // r c
-                int id = toNum(arr[1], arr[2]);
-                int root = find(id);
-                if(values[root] == null){answer.add("EMPTY");}
-                else answer.add(values[root]);
+            else if(arr[0].equals("PRINT")){
+                int idx = toNum(arr[1], arr[2]);
+                int root = find(idx);
+                if(child[root] != null){answer.add(child[root]);}
+                else{answer.add("EMPTY");}
             }
         }
-        
         return answer.toArray(new String[0]);
-    }
-    
-    public int toNum(String x, String y){
-        return (Integer.parseInt(x) - 1) * 50 + (Integer.parseInt(y) - 1);
     }
 }
