@@ -2,38 +2,39 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] gems) {
-        // 일단 보석 종류 갯수 구하기
-        Set<String> gem = new HashSet<>();
-        for(String g : gems){gem.add(g);}
-        int count = gem.size();
-        if(count == 1) return new int[]{1,1};
+        int[] answer = new int[2];
+        answer[1] = gems.length;
         
+        Set<String> set = new HashSet<>();
+        for(int i = 0; i < gems.length; i++){set.add(gems[i]);}
+        
+        if(set.size() == 1) return new int[]{1, 1};
+        int kind = set.size();
         int left = 0;
         int right = 0;
-        int len = gems.length;
-        int[] answer = new int[]{0, len};
-        
-        // 보석 갯수 하나씩 채워넣기
         Map<String, Integer> map = new HashMap<>();
         
-        while(right < len){
-            String gr = gems[right];
+        while(right < gems.length){
+            String g = gems[right];
+            map.put(g, map.getOrDefault(g, 0) +1);
             
-            map.put(gr, map.getOrDefault(gr, 0) + 1);
-            
-            while(map.size() == count){
-                String gl = gems[left];
-                if(answer[1] - answer[0] > right - left){
-                    answer[0] = left + 1;
-                    answer[1] = right + 1;
+            // 만약에 map크기가 이제 kind랑 맞으면
+            while(map.size() == kind){
+                // 그리고 가장 짧은 구간이니까
+                if((answer[1] - answer[0]) > (right - left)){
+                    answer[0] = left;
+                    answer[1] = right;
                 }
-                map.put(gl, map.get(gl) - 1);
-                if(map.get(gl) == 0) map.remove(gl);
+                 String l = gems[left];
+                map.put(l, map.get(l) - 1);
+                if(map.get(l) == 0) map.remove(l);
                 left++;
             }
+            
             right++;
         }
-        
+        answer[0] ++;
+        answer[1] ++;
         return answer;
     }
 }
