@@ -2,39 +2,47 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
-        int n = enroll.length;
-        int[] answer = new int[n];
+        int l = enroll.length;
+        int[] answer = new int[l];
+        // <자식, 부모> 1 : 1 매칭
+        // 밑에는 이제 idx 담아놓을 곳
+        Map<String, String> nmap = new HashMap<>();
+        Map<String, Integer> imap = new HashMap<>();
         
-        // 그래프 만들기
-        // r에 따라 e 넣어주기
-        // 그래프 반대로 만들어줘야지 타고올라가는거 처럼 만들기 가능
-        Map<String, String> pMap = new HashMap<>();
-        Map<String, Integer> iMap = new HashMap<>();
-        for(int i = 0; i < n; i++){
+        // young -> edward
+        // young -> 7
+        for(int i = 0; i < l; i++){
             String e = enroll[i];
             String r = referral[i];
-            
-            pMap.put(e, r);
-            iMap.put(e, i);
-        }
-                
-        // 그 다음 seller를 하나씩 꺼내서 이름 비교해서 pMap에 다음 값 찾고 -이면 중단
-        // 그러면서 iMap에서는 idx를 꺼내서 answer에 바로 바로 값 더해주기
-        for(int i = 0; i < seller.length; i++){
-            int total = amount[i] * 100;
-            String now = seller[i];
-            
-            while(!now.equals("-") && total > 0){
-                int rest = total / 10;
-                int num = total - rest;
-                
-                answer[iMap.get(now)] += num;
-                now = pMap.get(now);
-                
-                total = rest;
-            }
+            nmap.put(e, r);
+            imap.put(e, i);
         }
         
+        // 이제 seller 하나씩 꺼내서 밑에서 부터 쭈욱 올라오면서 answer에다가 값 넣어야함
+        for(int i = 0; i < seller.length; i++){
+            String key = seller[i];
+            int num = amount[i] * 100;
+            // young의 idx위치와 판 가격을 넣음
+            Queue<int[]> q = new LinkedList<>();
+            q.offer(new int[]{imap.get(key), num});
+            
+            while(!q.isEmpty()){
+                // 7, 1200이 처음에 오는데
+                int now[] = q.poll();
+                int idx = now[0]; 
+                int remain = now[1] / 10;
+                int n = now[1] - remain;
+                answer[idx] += n;
+                
+                if(remain == 0) break;
+                // 다음 부모를 찾아서 young의 부모 이름을 찾음 -> edward
+                // 그럼 edward의 idx를 찾아서 remain이랑 같이 넘김
+                String p = nmap.get(enroll[idx]);
+                // 하지만 하다보면 -가 나오는데 이때 멈춰야함
+                if(p.equals("-")) break;
+                q.offer(new int[]{imap.get(p), remain});
+            }
+        }
         return answer;
     }
 }
