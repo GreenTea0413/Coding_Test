@@ -1,74 +1,58 @@
 class Solution {
     public boolean solution(int[][] key, int[][] lock) {
-        boolean answer = false;
-        int N = lock.length;
-        int M = key.length;
-        int[][] board = new int[3 * N][3 * N];
+        int n = lock.length;
+        int[][] lock3 = new int[n * 3][n * 3];
         
-        // 자물쇠를 9*9의 한 가운데 3*3 배열에 맞춰넣기
-        for(int i = 0; i < N; i++){
-            for(int j = 0; j < N; j++){
-                board[i + N][j + N] = lock[i][j];
+        for(int i = n; i < n * 2; i++){
+            for(int j = n; j < n * 2; j++){
+                lock3[i][j] = lock[i - n][j - n];
             }
         }
         
-        // 0 0 0 0 0 0 0 0 0
-        // 0 0 0 0 0 0 0 0 0
-        // 0 0 0 0 0 0 0 0 0
-        // 0 0 0 1 1 1 0 0 0
-        // 0 0 0 1 1 0 0 0 0
-        // 0 0 0 1 0 1 0 0 0
-        // 0 0 0 0 0 0 0 0 0
-        // 0 0 0 0 0 0 0 0 0
-        // 0 0 0 0 0 0 0 0 0
-        
-        // 이제 부분씩 잘라서 key를 넣어볼 거임
-        // key의 크기에 따라서 모든 값을 넣어보았을 때 저기 한 가운데 lock이 모두 1이면 열림
-        // 아닐 경우에는 더한 값 다시 뺀 다음에 비교하기
+        int m = key.length;
+        // 시작점으로부터 이제 4방향으로 돌리면서 키가 다 맞는지 확인
         for(int i = 0; i < 4; i++){
             key = rotate(key);
-            
-            for(int x = 0; x < 2 * N; x++){
-                for(int y = 0; y < 2 * N; y++){
-                    // 0,0 ~ 5,5까지 해서 해당 되는 key 범위들을 다 더해볼거임
-                    for(int a = 0; a < M; a++){
-                        for(int b = 0; b < M; b++){
-                            board[x + a][y + b] += key[a][b];
+            for(int x = 0; x < n * 2; x++){
+                for(int y = 0 ; y < n * 2; y++){
+                    // 여기서 이제 x,y 기준으로 열쇠 크기에 맞게 값 넣기
+                    for(int a = 0; a < m; a++){
+                        for(int b = 0; b < m; b++){
+                            lock3[x + a][y + b] += key[a][b];
                         }
                     }
                     
-                    if(check(board, N)){return true;}
+                    if(check(lock3, n)) return true;
                     
-                    for(int a = 0; a < M; a++){
-                        for(int b = 0; b < M; b++){
-                            board[x + a][y + b] -= key[a][b];
+                    for(int a = 0; a < m; a++){
+                        for(int b = 0; b < m; b++){
+                            lock3[x + a][y + b] -= key[a][b];
                         }
                     }
                 }
             }
         }
-        return answer;
-    }
-    
-    public boolean check(int[][] b, int N){
-        for(int i = 0; i < N; i++){
-            for(int j = 0; j < N; j++){
-                if(b[i + N][j + N] != 1) return false;
-            }
-        }
-        return true;
+        
+        return false;
     }
     
     public int[][] rotate(int[][] key){
-        int M = key.length;
-        int[][] result = new int[M][M];
-        
-        for(int i = 0; i < M; i++){
-            for(int j = 0; j < M; j++){
-                result[i][j] = key[M - j - 1][i];
+        int n = key.length;
+        int[][] result = new int[n][n];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                result[i][j] = key[n - j - 1][i];
             }
         }
-        
         return result;
+    }
+    
+    public boolean check(int[][] map, int n){
+        for(int i = n; i < n * 2; i++){
+            for(int j = n; j < n * 2; j++){
+                if(map[i][j] != 1) return false;
+            }
+        }
+        return true;
     }
 }
