@@ -2,74 +2,70 @@ import java.util.*;
 
 class Solution {
     public String solution(int n, int k, String[] cmd) {
-        // U 2 는 2번 위로가서 행을 선택
-        // D 2 는 2번 밑으로 내려가서 선택
-        // C는 현재 행 삭제, 아래 행 선택 -> 만약에 n - 1 번째일 때 삭제하면 위치는 0
-        // Z는 삭제한것만 되돌림
-        int location = k;
-        Stack<int[]> stack = new Stack<>(); // [위치, 앞의값, 뒤의값]
-        
-        // 모든 계산을 다 하면 시간초과 발생함
-        // 그래서 node 처럼 만들어서 앞뒤로 이어지게 한 다음 다음 목적지로 바로 이동하도록 하기
         int[] prev = new int[n];
         int[] next = new int[n];
+        Stack<int[]> stack = new Stack<>();
+        
         for(int i = 0; i < n; i++){
             prev[i] = i - 1;
             next[i] = i + 1;
         }
         
         next[n - 1] = -1;
-        
+        int loc = k;
         for(String c : cmd){
-            if(c.length() > 1){
-                String[] arr = c.split(" ");
-                int num = Integer.parseInt(arr[1]);
-                if(arr[0].equals("U")){
-                    while(num > 0){
-                        num --;
-                        location = prev[location];
+            String[] s = c.split(" ");
+            if(s.length > 1){
+                int x = Integer.parseInt(s[1]);
+                if(s[0].equals("U")){
+                    while(x > 0){
+                        loc = prev[loc];
+                        x--;
                     }
                 }
-                else if(arr[0].equals("D")){
-                    while(num > 0){
-                        num --;
-                        location = next[location];
+                else if(s[0].equals("D")){
+                    while(x > 0){
+                        loc = next[loc];
+                        x--;
                     }
                 }
             }
-            else {
-                if(c.equals("Z")){
-                    if(!stack.isEmpty()){
-                        int[] restore = stack.pop();
+            else{   
+                if(s[0].equals("C")){
+                    // loc = 1
+                    // 1이 이전에 가리키고 있는 곳에 다가 또 거기에 값을 새롭게 넣어줘야함
+                    stack.push(new int[]{loc, prev[loc], next[loc]});
 
-                        int idx = restore[0];
-                        int p = restore[1];
-                        int nIdx = restore[2];
+                    // 1앞이 만약에 아무것도 없는게 아니라면
+                    // 1이 앞을 가리키고 있는 곳의 next가 1의 next가 되어야함
+                    // 1이 뒤를 가리키고 있는 곳의 prev가 1의 prev를 가르켜야함
+                    // 0 1 2 3 4
+                    // 0 -> 2
+                    // 0 <- 2
+                    if(prev[loc] != -1) next[prev[loc]] = next[loc];
+                    if(next[loc] != -1) prev[next[loc]] = prev[loc];
 
-                        if (p != -1) {
-                            next[p] = idx;
-                        }
-                        if (nIdx != -1) {
-                            prev[nIdx] = idx;
-                        }
-                    }
+                    if(next[loc] == -1) loc = prev[loc];
+                    else loc = next[loc];
                 }
-                else if(c.equals("C")){
-                    stack.push(new int[]{location, prev[location], next[location]});
-                    
-                    if(prev[location] != -1){next[prev[location]] = next[location];}
-                    if(next[location] != -1){prev[next[location]] = prev[location];}
-                    
-                    if(next[location] != -1){location = next[location];}
-                    else{location = prev[location];}
+                else{
+                    if(!stack.isEmpty()){
+                        int[] now = stack.pop();
+
+                        int l = now[0];
+                        int pIdx = now[1];
+                        int nIdx = now[2];
+                        
+                        if(pIdx != -1) next[pIdx] = l;
+                        if(nIdx != -1) prev[nIdx] = l;
+                    }
                 }
             }
         }
         StringBuilder answer = new StringBuilder();
-        for(int i = 0; i < n; i++){answer.append('O');}
-        for(int[] s : stack){
-            answer.setCharAt(s[0], 'X');
-        }
+        for(int i = 0; i < n; i++) answer.append('O');
+        for(int[] s : stack) answer.setCharAt(s[0], 'X');
+        
         return answer.toString();
     }
 }
