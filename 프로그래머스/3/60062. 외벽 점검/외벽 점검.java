@@ -1,55 +1,58 @@
-import java.util.*;
-
 class Solution {
+    int[] w;
+    int[] d;
+    int len;
     int answer = Integer.MAX_VALUE;
-    int wLen;
+    int[] wall;
     public int solution(int n, int[] weak, int[] dist) {
-        wLen = weak.length;
-        int[] weak2 = new int[n * 2];
-        for(int i = 0; i < wLen; i++){
-            weak2[i] = weak[i];
-            weak2[i + wLen] = weak[i] + n;
+        w = weak; d = dist; len = n;
+        wall = new int[len * 2];
+        for(int i = 0; i < weak.length; i++){
+            wall[weak[i]] = weak[i];
+            wall[weak[i] + len] = weak[i] + len;
         }
         
-        // 사람이 들어가는 순서를 다 고려해야함
-        dfs(n, weak2, dist, new ArrayList<>(), new boolean[dist.length]);
-        return answer == Integer.MAX_VALUE ? -1: answer;
+        dfs(new boolean[dist.length], 0, new int[dist.length]);
+        return answer == Integer.MAX_VALUE ? -1 : answer;
     }
     
-    public void dfs(int n, int[] weak2, int[] dist, List<Integer> friend, boolean[] v){
-        if(dist.length == friend.size()){
-            for(int i = 0; i < wLen; i++){
-                int count = check(i, weak2, friend);
-                if(count != -1) answer= Math.min(answer, count);
+    void dfs(boolean[] v, int depth, int[] arr){
+        if(depth == arr.length){
+            for(int i = 0; i < len; i++){
+                int count = check(arr, i);
+                if(count != -1) {
+                    answer = Math.min(answer, count);
+                }
             }
             return;
         }
         
-        for(int i = 0; i < dist.length; i++){
+        for(int i = 0; i < v.length; i++){
             if(!v[i]){
                 v[i] = true;
-                friend.add(dist[i]);
+                arr[depth] = d[i];
                 
-                dfs(n, weak2, dist, friend, v);
+                dfs(v, depth + 1, arr);
                 
                 v[i] = false;
-                friend.remove(friend.size() - 1);
+                arr[depth] = 0;
             }
         }
     }
     
-    public int check(int start, int[] weak2, List<Integer> friend){
+    int check(int[] arr, int start){
+        // 이제 조합 짠걸로 weak2배로 만든 다음에 범위 안에서 돌게끔하기
+        // 한번이라도 되면 true로 내보내기
+        // arr 첫 조합을 4,3,2,1이 되었다고 생각하고
         int f = 0;
-        int cur = weak2[start] + friend.get(f);
-        
-        for(int i = start; i < start + wLen; i++){
-            if(weak2[i] > cur){
+        int cur = wall[start] + arr[f];
+        for(int i = start; i < start + len; i++){
+            if(wall[i] > cur){
                 f++;
-                if(f == friend.size()) return -1;
-                cur = weak2[i] + friend.get(f);
+                if(f == arr.length) return -1;
+                cur = wall[i] + arr[f];
             }
         }
-        
         return f + 1;
     }
 }
