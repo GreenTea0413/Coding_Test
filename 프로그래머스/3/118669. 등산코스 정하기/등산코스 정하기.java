@@ -1,69 +1,55 @@
 import java.util.*;
 
 class Solution {
-    class Node{
-        int to;
-        int intensity;
-        
-        Node(int to, int intensity){
-            this.to = to;
-            this.intensity = intensity;
-        }
-    }
+    List<List<int[]>> graph = new ArrayList<>();
     
-    // 그래프 만들어 놓기
     public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
-        List<Node>[] graph = new ArrayList[n + 1];    
-        for(int i = 1; i <= n; i++) {
-            graph[i] = new ArrayList<>();
-        }
+        for(int i = 0; i <= n; i++) graph.add(new ArrayList<>());
         for(int[] p : paths){
-            graph[p[0]].add(new Node(p[1], p[2]));
-            graph[p[1]].add(new Node(p[0], p[2]));
+            graph.get(p[0]).add(new int[]{p[1], p[2]});
+            graph.get(p[1]).add(new int[]{p[0], p[2]});
         }
         
-        // 한번 이동할 때의 최대 이동길이가 가장 짧은 것을 구하고 거기에 도착한 산봉우리 번호
-        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> {return a.intensity - b.intensity;});
+        // 산봉우리인지 확인
+        boolean[] isSummit = new boolean[n + 1];
+        for(int s : summits) isSummit[s] = true;
         
-        Set<Integer> sumSet = new HashSet<>();
-        for(int sum : summits){sumSet.add(sum);}
-        
-        int[] inten = new int[n + 1];
-        Arrays.fill(inten, Integer.MAX_VALUE);
-        
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (a[1] - b[1]));
+        int[] dist = new int[n + 1];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        // 위치, intensity값
         for(int g : gates){
-            inten[g] = 0;
-            pq.offer(new Node(g, 0));
+            dist[g] = 0;
+            pq.offer(new int[]{g, 0});
         }
         
         while(!pq.isEmpty()){
-            Node cur = pq.poll();
+            int[] now = pq.poll();
+            int node = now[0];
+            int intensity = now[1];
             
-            if(cur.intensity > inten[cur.to]) continue;
-            if(sumSet.contains(cur.to)) continue;
+            // 차피 지금 값이 더 크면 안해도 됨
+            if(intensity > dist[node]) continue;
+            if(isSummit[node]) continue;
             
-            for(Node next : graph[cur.to]){
-                int nextIntensity = Math.max(next.intensity, cur.intensity);
-                
-                if(nextIntensity < inten[next.to]){
-                    inten[next.to] = nextIntensity;
-                    pq.offer(new Node(next.to, nextIntensity));
+            for(int[] next : graph.get(node)){
+                int nextIntensity = Math.max(next[1], intensity);
+                    
+                if(dist[next[0]] > nextIntensity){
+                    dist[next[0]] = nextIntensity;
+                    pq.offer(new int[]{next[0], nextIntensity});
                 }
-                
             }
         }
         
         Arrays.sort(summits);
-        int summitNum = 0;
-        int minIntensity = Integer.MAX_VALUE;
-        
-        for(int sum : summits){
-            if(inten[sum] < minIntensity){
-                summitNum = sum;
-                minIntensity = inten[sum];
+        int[] answer = {-1, Integer.MAX_VALUE};
+        for(int s : summits){
+            if(dist[s] < answer[1]){
+                answer[0] = s;
+                answer[1] = dist[s];
             }
         }
-        
-        return new int[]{summitNum, minIntensity};
+        return answer;
     }
 }
