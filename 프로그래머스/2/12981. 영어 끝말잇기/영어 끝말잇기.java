@@ -1,23 +1,27 @@
 import java.util.*;
 
 class Solution {
-    Set<String> set = new HashSet<>();
-    
     public int[] solution(int n, String[] words) {
         int[] answer = new int[2];
-        String last = words[0];
-        set.add(words[0]);
+
+        Set<String> set = new HashSet<>();
+        int turn = 1;
+        int user = 1;
+        String w = words[0];
+        set.add(w);
         
         for(int i = 1; i < words.length; i++){
-            String w = words[i];
-            if(set.contains(w) || (last.charAt(last.length() - 1) != w.charAt(0))){
-                answer[0] = i % n + 1;
-                answer[1] = i / n + 1;
-                
-                return answer;
+            // 집합에 없고 w 끝말이랑 words[i] 첫단어가 같으면 ok
+            if(!set.contains(words[i]) && w.charAt(w.length() - 1) == words[i].charAt(0)){
+                set.add(words[i]);
+                w = words[i];
+                user++;
+                // user가 n이랑 같아지면 다시 1로 보내기
+                if(user == n) { user = 0; turn ++;}
             }
-            last = w;
-            set.add(w);
+            else{
+                return new int[]{user + 1, turn};
+            }
         }
         
         return answer;
