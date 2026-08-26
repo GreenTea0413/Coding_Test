@@ -3,39 +3,40 @@ import java.util.*;
 class Solution {
     public int solution(String s) {
         int answer = 0;
-        int len = s.length();
-        if(len % 2 == 1) return 0;
-        
-        Stack<Character> stack = new Stack<>();
-        
-        for(int i = 0; i < len; i++){
-            String temp = s.substring(i,len) + s.substring(0,i);
-            int count = 0;
-            for(char c : temp.toCharArray()){
-                if(c == '{' || c == '(' || c == '['){
-                    stack.push(c);
-                }            
+        StringBuilder sb = new StringBuilder();
+        int len =s.length();
+        sb.append(s); sb.append(s);
+        // sb에다가 s를 두번 합치기
+        // 그리고 s의 길이만큼 범위를 정하고 0 ~ len까지 반복해서 올바르게 되는거 찾기
+        for(int start = 0; start < len; start++){
+            Stack<Character> stack = new Stack<>();
+            boolean check = true;
+            
+            // 문자 돌면서 여기서 하나씩 체크
+            for(int i = start; i < start + len; i++){
+                char c = sb.charAt(i);
+                
+                // ( [ { 이면 넣기
+                // 들어갔는데 
+                if(c == '(' || c == '{' || c == '[') stack.push(c);
                 else{
-                    if(stack.isEmpty()) break;
-                    
+                    if(c == ')'){
+                        if(stack.isEmpty() || stack.peek() != '(') {check = false; break;}
+                        else if(stack.peek() == '(') stack.pop();
+                    }
+                    if(c == ']'){
+                        if(stack.isEmpty() || stack.peek() != '[') {check = false; break;}
+                        else if(stack.peek() == '[') stack.pop();
+                    }
                     if(c == '}'){
-                        if(stack.peek() == '{') {stack.pop(); count++;}
-                        else {break;}
+                        if(stack.isEmpty() || stack.peek() != '{') {check = false; break;}
+                        else if(stack.peek() == '{') stack.pop();
                     }
-                    else if(c == ']'){
-                        if(stack.peek() == '[') {stack.pop(); count++;}
-                        else {break;}
-                    }
-                    else if(c == ')'){
-                        if(stack.peek() == '(') {stack.pop(); count++;}
-                        else {break;}
-                    }
-                    
                 }
             }
-            
-            if(count == len / 2){answer++;}
+            if(check && stack.isEmpty()) answer++;
         }
+        
         return answer;
     }
 }
