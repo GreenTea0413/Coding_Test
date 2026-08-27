@@ -2,38 +2,50 @@ import java.util.*;
 
 class Solution {
     int answer = 0;
-    int len = 0;
+    int[][] d;
+    int l;
     public int solution(int k, int[][] dungeons) {
-        len = dungeons.length;
-        // 최소 피로도 내림차순
-        // 최소 피로도가 같으면 소모 피로다가 작은 순서대로
-        Arrays.sort(dungeons, (a, b) -> {
-            if(a[0] == b[0]) return a[1] - b[1];
-            return b[0] - a[0];
-        });
-        // 시작을 0,1,2으로 선택 후 시작
-        for(int i = 0; i < len; i++){
-            if(k >= dungeons[i][0]){
-                boolean[] v = new boolean[len];
-                v[i] = true;
-                dfs(v, k - dungeons[i][1], dungeons, 1);    
-            }
-        }
+        d = dungeons;
+        l = dungeons.length;
+        int[] path = new int[l];
+        Arrays.fill(path, -1);
+        // 이걸로 던전 백트래킹으로 경로 어떻게 갈지 다 대비해보기
+        dfs(new boolean[l], path, 0, k);
         
         return answer;
     }
     
-    public void dfs(boolean[] v, int k, int[][] dungeons, int count){
-        answer = Math.max(answer, count);
+    void dfs(boolean[] v, int[] path, int depth, int k){
+        if(depth == l){
+            int n = count(k, path);
+            if(n != 0) answer = Math.max(answer, n);
+            return;
+        }
         
-        for(int i = 0; i < len; i++){
+        for(int i = 0; i < l; i++){
             if(!v[i]){
-                if(k >= dungeons[i][0]){
-                    v[i] = true;
-                    dfs(v, k - dungeons[i][1], dungeons, count + 1);
-                    v[i] = false;
-                }
+                v[i] = true;
+                path[depth] = i;
+                
+                dfs(v, path, depth + 1, k);
+                
+                v[i] = false;
+                path[depth] = -1;
             }
         }
+    }
+    
+    public int count(int k, int[] path){
+        int num = 0;
+        
+        for(int i = 0; i < l; i++){
+            int idx = path[i];
+            if(k < d[idx][0]) break;
+            else{
+                k -= d[idx][1];
+                num++;
+            }
+        }
+        return num;
     }
 }
