@@ -3,27 +3,28 @@ import java.util.*;
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         List<Integer> answer = new ArrayList<>();
-        int len = speeds.length;
-        Queue<Integer> q = new LinkedList<>();
+        int l = speeds.length;
+        // 남은 일 횟수
+        // 7 3 9
         
-        for(int i = 0; i < len; i++){
-            int work = 100 - progresses[i];
-            int rest = work / speeds[i];
-            if(work % speeds[i] >= 1){rest += 1;}
+        Queue<Integer> q = new LinkedList<>();
+        for(int i = 0; i < l; i++){
+            int rest = (100 - progresses[i]) / speeds[i];
+            if((100 - progresses[i]) % speeds[i] != 0) rest++;
             
-            // 7 3 9
             q.offer(rest);
         }
         
         while(!q.isEmpty()){
             int now = q.poll();
-            int count = 1;
-            while(!q.isEmpty() && now >= q.peek()){
+            int num = 1;
+            while(!q.isEmpty() && q.peek() <= now){
                 q.poll();
-                count++;
+                num++;
             }
-            answer.add(count);
+            answer.add(num);
         }
+        
         return answer.stream().mapToInt(i -> i).toArray();
     }
 }
