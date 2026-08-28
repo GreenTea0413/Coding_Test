@@ -5,20 +5,25 @@ class Solution {
         int answer = 0;
         int len = topping.length;
         
-        Map<Integer, Integer> a = new HashMap<>();
-        Map<Integer, Integer> b = new HashMap<>();
+        // 이걸 쭉 반복하면 딱봐도 터짐
+        // 왼쪽은 0 부터 시작해서 하나씩 다 담아보면 됨
+        // 오른쪽은 1부터 끝까지 다 담은 상태
+        Map<Integer, Integer> left = new HashMap<>();
+        Map<Integer, Integer> right = new HashMap<>();
         
-        a.put(topping[0], 1);
+        left.put(topping[0], 1);
         for(int i = 1; i < len; i++){
-            b.put(topping[i], b.getOrDefault(topping[i], 0) + 1);
+            int t = topping[i];
+            right.put(t, right.getOrDefault(t, 0) + 1);
         }
         
-        for(int i = 1; i < len - 1; i++){
-            a.put(topping[i], a.getOrDefault(topping[i], 0) + 1);
-            b.put(topping[i], b.get(topping[i]) - 1);
+        for(int i = 1; i < len; i++){
+            int t = topping[i];
+            left.put(t, right.getOrDefault(t, 0) + 1);
+            right.put(t, right.get(t) - 1);
             
-            if(b.get(topping[i]) == 0) b.remove(topping[i]);
-            if(a.size() == b.size()) answer ++;
+            if(right.get(t) == 0) right.remove(t);
+            if(left.size() == right.size()) answer++;
         }
         return answer;
     }
