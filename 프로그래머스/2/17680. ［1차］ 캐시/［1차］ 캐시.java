@@ -2,27 +2,26 @@ import java.util.*;
 
 class Solution {
     public int solution(int cacheSize, String[] cities) {
-        int answer = 0;
-        if (cacheSize == 0) {return cities.length * 5;}
-        
         Queue<String> q = new LinkedList<>();
+        q.offer(cities[0].toLowerCase());
+        int answer = 5;
+        int len = cities.length;
         
-        for(String city : cities){
-            String temp = city.toLowerCase();
+        if(cacheSize == 0) return len * 5;
+        for(int i = 1; i < len; i++){
+            String c = cities[i].toLowerCase();
             
-            
-            // q안에 도시가 있다면?
-            if(q.contains(temp)){
-                answer+=1;
-                q.remove(temp);
-                q.offer(temp);
+            if(q.contains(c)) {
+                answer++;
+                q.remove(c);
+                q.offer(c);
             }
             else{
                 answer += 5;
-                q.offer(temp);
-                if(q.size() > cacheSize){
+                if(q.size() == cacheSize){
                     q.poll();
                 }
+                q.offer(c);
             }
         }
         
