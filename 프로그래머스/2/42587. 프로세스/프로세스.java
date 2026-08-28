@@ -3,32 +3,28 @@ import java.util.*;
 class Solution {
     public int solution(int[] priorities, int location) {
         int answer = 0;
-        // 인덱스, 우선순위
+        
         Queue<int[]> q = new LinkedList<>();
         for(int i = 0; i < priorities.length; i++){
-            q.offer(new int[]{i, priorities[i]});
+            q.offer(new int[]{priorities[i], i});
         }
         
         while(!q.isEmpty()){
-            // [0, 2]
             int[] now = q.poll();
-            boolean check = false;
-            
-            for(int[] next : q){
-                if(next[1] > now[1]){
+            // 여기서 뺏을때 만약에 하나라도 우선순위가 높은게 있으면 그냥 바로 넘어가야함
+            boolean check = true;
+            for(int[] n : q){
+                if(n[0] > now[0]){
                     q.offer(now);
-                    check = true;
+                    check = false;
                     break;
                 }
             }
-            
-            if(!check){
-                answer ++;
-                if(location == now[0]){
-                    return answer;
-                }
-            }
+            // 근데 만약에 아니다?
+            if(check) answer ++;
+            if(check && now[1] == location) return answer;
         }
+        
         return answer;
     }
 }
