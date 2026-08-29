@@ -1,41 +1,38 @@
 import java.util.*;
 
 class Solution {
+    // U D R L
+    int[][] d = {{0,1},{0,-1},{1,0}, {-1,0}};
+    
     public int solution(String dirs) {
+        // 중복을 빼야함
+        Set<String> set = new HashSet<>();
         int answer = 0;
-        char[] arr = dirs.toCharArray();
-        Set<String> v = new HashSet<>();
+        int x = 0; int y = 0;
         
-        // (5, 5)
-        int x = 5, y = 5;
-        for(int i = 0; i < arr.length; i++){
+        for(char c : dirs.toCharArray()){
+            int nx = x; int ny = y;
+            if(c == 'U') {nx += d[0][0]; ny += d[0][1];}
+            else if(c == 'D') {nx += d[1][0]; ny += d[1][1];}
+            else if(c == 'R') {nx += d[2][0]; ny += d[2][1];}
+            else if(c == 'L') {nx += d[3][0]; ny += d[3][1];}
             
-            int nx = x, ny = y;
-            if(arr[i] == 'U'){
-                if(y < 10){ny += 1;}
-            }
-            else if(arr[i] == 'D'){
-                if(y > 0){ny -= 1;}
-            }
-            else if(arr[i] == 'L'){
-                if(x > 0){nx -= 1;}
-            }
-            else {
-                if(x < 10){nx += 1;}
-            }
             
-            if(nx == x && ny == y) continue;
+            if(nx < -5 || nx > 5 || ny < -5 || ny > 5) continue;
+            
             
             String str1 = "" + x + "," + y + "," + nx + "," + ny;
             String str2 = "" + nx + "," + ny + "," + x + "," + y;
             
-            if(!v.contains(str1)){
-                v.add(str1);
-                v.add(str2);
+            if(!set.contains(str1)){
+                set.add(str1);
+                set.add(str2);
                 answer++;
             }
+           
             x = nx; y = ny;
         }
+        
         return answer;
     }
 }
