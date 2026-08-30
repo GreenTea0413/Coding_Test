@@ -4,22 +4,21 @@ class Solution {
     public int[] solution(int[] prices) {
         int len = prices.length;
         int[] answer = new int[len];
-        Stack<Integer> s = new Stack<>();
-        
-        // 1 2 3 -> 2 들어갈때 3 > 2 되니까 3을 비교해야하네
-        // [0,0,1,0,0];
-        // 0, 1, 3 -> 4 들어갈 때 가격 안떨어지니까 그대로 [0,1,3,4]
+        Stack<Integer> stack = new Stack<>();
+        // 그러면 스택에 넣어놓고 최신값과 비교했을 때 줄어들었으면?
+        // 빼내고 i위치에 맞게 갑승ㄹ answer에 넣어주기
+        // 아 값을 넣는게 아니라 idx 값을 넣어야 뺀다음에 바로 적용가능함
         for(int i = 0; i < len; i++){
-            while(!s.isEmpty() && prices[s.peek()] > prices[i]){
-                int idx = s.pop();
-                answer[idx] = i - idx;
+            while(!stack.isEmpty() && prices[stack.peek()] > prices[i]){
+                int num = stack.pop();
+                answer[num] = i - num;
             }
-            s.push(i);
+            stack.push(i);
         }
         
-        while(!s.isEmpty()){
-            int idx = s.pop();
-            answer[idx] = len - idx - 1;
+        while(!stack.isEmpty()){
+            int n = stack.pop();
+            answer[n] = len - n - 1;
         }
         return answer;
     }
