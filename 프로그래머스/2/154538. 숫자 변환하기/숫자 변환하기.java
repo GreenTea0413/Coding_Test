@@ -2,31 +2,23 @@ import java.util.*;
 
 class Solution {
     public int solution(int x, int y, int n) {
-        int answer = -1;
-        
         Queue<int[]> q = new LinkedList<>();
-        boolean[] v = new boolean[y + 1];
-        
         q.offer(new int[]{x, 0});
-        v[x] = true;
+        Set<Integer> set = new HashSet<>();
+        set.add(x);
         
         while(!q.isEmpty()){
-            int[] arr = q.poll();
-            int num = arr[0], dist = arr[1];
+            int[] now = q.poll();
+            if(now[0] == y) return now[1];
             
-            if(num == y){return dist;}
+            int n1 = now[0] + n;
+            int n2 = now[0] * 2;
+            int n3 = now[0] * 3;
             
-            int num1 = num + n;
-            if(num1 <= y && !v[num1]){q.offer(new int[]{num1, dist + 1}); v[num1] = true;}
-            
-            int num2 = num * 2;
-            if(num2 <= y && !v[num2]){q.offer(new int[]{num2, dist + 1}); v[num2] = true;}
-            
-            int num3 = num * 3;
-            if(num3 <= y && !v[num3]){q.offer(new int[]{num3, dist + 1}); v[num3] = true;}
+            if(!set.contains(n1) && n1 <= y) {set.add(n1); q.offer(new int[]{n1, now[1] + 1});}
+            if(!set.contains(n2) && n2 <= y) {set.add(n2); q.offer(new int[]{n2, now[1] + 1});}
+            if(!set.contains(n3) && n3 <= y) {set.add(n3); q.offer(new int[]{n3, now[1] + 1});}
         }
-        
-        
-        return answer;
+        return -1;
     }
 }
