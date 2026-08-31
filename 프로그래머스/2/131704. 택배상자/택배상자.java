@@ -4,33 +4,38 @@ class Solution {
     public int solution(int[] order) {
         int answer = 0;
         int n = order.length;
-        // 컨테이너 1 ~ n까지 번호 증가 순 그리고 앞에서 부터 꺼내야함
-        Queue<Integer> con = new LinkedList<>();
-        // 보조는 마지막에 들어온걸 먼저 뺼 수 있음
+        
+        // n번까지 증가하는 순서
+        // 메인 컨테이너여서 1 ~ n까지 이미 실려있음
+        Queue<Integer> main = new LinkedList<>();
+        for(int i = 1; i <= n; i++) main.offer(i);
+        
+        // 보조는 막혀있어서 젤 위에꺼만 뺼 수 있음
+        // stack 써야함
         Stack<Integer> sub = new Stack<>();
         
-        // 일단 n까지 다 넣어놓기
-        for(int i = 1; i <= n; i++){con.offer(i);}
-        
-        // 그리고 이제 order에 맞는 값이 있으면 꺼내기
-        for(int i = 0; i < n; i++){
+        for(int o : order){
             boolean check = false;
-            int num = order[i];
-            // 꺼내서 보관한 sub에 있는지
-            if(!sub.isEmpty() && sub.peek() == num){
-                answer++;
+            // 보조에서 꺼낼 수 있으면 먼저 꺼내기
+            if(!sub.isEmpty() && sub.peek() == o) {
                 sub.pop();
+                answer++;
                 check = true;
             }
-            // 꺼낸게 기존 con에 있는지
             else{
-                while(!con.isEmpty()){
-                    int c = con.poll();
-                    if(c == num){answer++; check= true; break;}
-                    else{sub.push(c);}
-                }
+                // 보조에서 없으니까 이제 메인에서 하나씩 꺼내보기
+                while(!check && !main.isEmpty()){
+                    int now = main.poll();
+                    if(now == o) {
+                        answer++;
+                        check = true;
+                        break;
+                    }
+                    else sub.push(now);
+                }   
             }
-            if(!check){break;}
+            
+            if(!check) break;
         }
         
         return answer;
