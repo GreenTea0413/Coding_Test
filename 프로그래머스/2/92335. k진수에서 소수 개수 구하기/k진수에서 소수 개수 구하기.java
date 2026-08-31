@@ -1,31 +1,25 @@
 class Solution {
     public int solution(int n, int k) {
         int answer = 0;
-        String num = "";
-        
+        String str = "";
         while(n > 0){
             int rest = n % k;
-            num = String.valueOf(rest) + num;
+            str = String.valueOf(rest) + str;
             n = n / k;
         }
         
-        String[] arr = num.split("0");
+        String[] arr = str.split("0");
         for(String a : arr){
-            if(a.equals("")) continue;
-            
-            Long temp = Long.parseLong(a);
-            if(check(temp)){
-                answer++;
-            }
+            if(!a.equals("") && check(Long.parseLong(a))) answer++;
         }
-        
         return answer;
     }
     
-    public boolean check(Long num){
-        if(num < 2) return false;
-        for(int i = 2; i <= Math.sqrt(num); i++){
-            if(num % i == 0) return false;
+    boolean check(Long n){
+        if(n < 2) return false;
+        
+        for(int i = 2; i <= Math.sqrt(n); i++){
+            if(n % i == 0) return false;
         }
         
         return true;
