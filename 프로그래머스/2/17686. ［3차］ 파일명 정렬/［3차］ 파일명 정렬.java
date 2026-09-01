@@ -9,33 +9,34 @@ class Solution {
             int headCompared = head1.toLowerCase().compareTo(head2.toLowerCase());
             if(headCompared != 0) return headCompared;
             
-            int num1 = getNumber(a);
-            int num2 = getNumber(b);
+            int num1 = getNum(a);
+            int num2 = getNum(b);
             
             return num1 - num2;
         });
         return files;
     }
     
-    
-    public String getHead(String str){
+    String getHead(String file){
         int i = 0;
-        while(i < str.length() && !Character.isDigit(str.charAt(i))){
+        while(i < file.length() && !Character.isDigit(file.charAt(i))){
             i++;
         }
-        return str.substring(0, i);
+        
+        return file.substring(0, i);
     }
     
-    public int getNumber(String str){
+    int getNum(String file){
         int i = 0;
-        while(i < str.length() && !Character.isDigit(str.charAt(i))){
+        while(i < file.length() && !Character.isDigit(file.charAt(i))){
             i++;
         }
         
         int start = i;
-        while(i < str.length() && Character.isDigit(str.charAt(i)) && (i - start) < 5){
+        while(i < file.length() && Character.isDigit(file.charAt(i))){
             i++;
         }
-        return Integer.parseInt(str.substring(start, i));
+        
+        return Integer.parseInt(file.substring(start, i));
     }
 }
