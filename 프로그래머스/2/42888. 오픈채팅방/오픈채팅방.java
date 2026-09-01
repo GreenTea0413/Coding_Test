@@ -2,31 +2,33 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[] record) {
-        // 고유번호랑 닉네임
-        Map<String, String> name = new HashMap<>();
+        // 유저 uid와 이름을 저장할 map
+        Map<String, String> nameMap = new HashMap<>();
+        
         for(String rec : record){
             String[] arr = rec.split(" ");
             
-            if (!arr[0].equals("Leave")){
-                name.put(arr[1], arr[2]);
-            }
+            String cmd = arr[0];
+            if(cmd.equals("Leave")) continue;
+            
+            String uid = arr[1];
+            String name = arr[2];
+            nameMap.put(uid, name);
         }
         
         List<String> answer = new ArrayList<>();
-        for(String r : record){
-            String[] words = r.split(" ");
-            if(words[0].equals("Enter")){
-                answer.add(name.get(words[1]) + "님이 들어왔습니다.");
-            }
-            else if(words[0].equals("Leave")){
-                answer.add(name.get(words[1]) + "님이 나갔습니다.");
-            }
+        
+        for(String rec : record){
+            String[] arr = rec.split(" ");
+           
+            String cmd = arr[0];
+            String uid = arr[1];
+            String temp = "";
+            if(cmd.equals("Enter")) {temp += nameMap.get(uid) + "님이 들어왔습니다.";answer.add(temp);}
+            else if(cmd.equals("Leave")) {temp += nameMap.get(uid) + "님이 나갔습니다.";answer.add(temp);}
+            
         }
         
-        String[] result = new String[answer.size()];
-        for(int i = 0; i < answer.size(); i++){
-            result[i] = answer.get(i);
-        }
-        return result;
+        return answer.toArray(new String[0]);
     }
 }
