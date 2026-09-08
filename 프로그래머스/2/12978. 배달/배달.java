@@ -1,50 +1,39 @@
 import java.util.*;
 
 class Solution {
-    static class Node{
-        int to;
-        int cost;
-        
-        Node(int to, int cost){
-            this.to = to;
-            this.cost = cost;
-        }
-    }
-    
-    List<Node>[] graph;
     public int solution(int N, int[][] road, int K) {
-        graph= new ArrayList[N + 1];
+        List<List<int[]>> graph = new ArrayList<>();
         
-        for(int i = 0; i <= N; i++){graph[i]= new ArrayList<>();}
+        for(int i = 0; i <= N; i++) graph.add(new ArrayList<>());
         for(int[] r : road){
-            graph[r[0]].add(new Node(r[1], r[2]));
-            graph[r[1]].add(new Node(r[0], r[2]));
+            graph.get(r[0]).add(new int[]{r[1], r[2]});
+            graph.get(r[1]).add(new int[]{r[0], r[2]});
         }
-        
+
+        // 1번 마을에서 출발해서 K보다 작거나 같으면 배달가유~
         int[] dist = new int[N + 1];
         Arrays.fill(dist, Integer.MAX_VALUE);
-        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> {return a.cost - b.cost;});
-        pq.offer(new Node(1, 0));
         dist[1] = 0;
         
+        // 번호, 거리
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (a[1] - b[1]));
+        pq.offer(new int[]{1, 0});
+            
         while(!pq.isEmpty()){
-            Node now = pq.poll();
+            int[] now = pq.poll();
             
-            if(now.cost > dist[now.to]){continue;}
+            if(dist[now[0]] < now[1]) continue;
             
-            for(Node next : graph[now.to]){
-                int nextCost = now.cost + next.cost;
-                
-                if(nextCost < dist[next.to]){
-                    dist[next.to] = nextCost;
-                    pq.offer(new Node(next.to, nextCost));
-                }
+            for(int[] next : graph.get(now[0])){
+                int nextDist = now[1] + next[1];
+                if(dist[next[0]] > nextDist) dist[next[0]] = nextDist;
+                pq.offer(new int[]{next[0], nextDist});
             }
-            
         }
+        
         int answer = 0;
         for(int i = 1; i <= N; i++){
-            if(dist[i] <= K){answer++;}
+            if(dist[i] <= K) answer ++;
         }
         return answer;
     }
