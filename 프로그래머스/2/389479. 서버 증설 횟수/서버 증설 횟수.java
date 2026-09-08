@@ -1,40 +1,42 @@
 import java.util.*;
+
 class Solution {
     public int solution(int[] players, int m, int k) {
+        // m명 늘어날때마다 서버 1대 추가
+        // m명 미만이면 안늘려도 됨
+        // 근데 서버 한번 늘리면 k동안 운영됨
         int answer = 0;
-        // m 미만이면 서버 증설 안시킴
-        // 그러면 서버는 k 시간만큼 유지됨
-        // k = 5, 2 ~ 7 
-        // 근데 문제는 m * 2면 서버를 최대 2개까지 증설 시켜야함
-        // 시간, 열려있는 서버 개수
-        // 처음에 다 0개로 해놓기
+        int server = 0;
+        int time = 0;
+        Queue<Integer> q = new LinkedList<>();
         Map<Integer, Integer> map = new HashMap<>();
-        for(int i = 0; i < 50; i++){
-            map.put(i, 0);
-        }
-        // 24시간 1시간 마다 반복할거임
-        for(int i = 0; i < 24; i++){
-            // 그 시간대 플레이어가 몇명
-            int num = players[i];
-            int quo = num / m;
+        // 그러면 어떻게 관리를 해야하는가..
+        // time을 하나씩 증가시키고 이 타임이 24보다 작으면 도는데
+        // 여기서 만약에 서버 증설하는 시간을 q에 넣는거임 그러고 time이 만약에 2에 증설하고
+        // 7에 도착하면 tiem - q.peek() == k server --; 시키는건데
+        // 그러면 이때 문제 발생 한번에 여러개 증설했다면?
+        // map으로 <시간, 증설횟수>를 담는거임
+        // 7에 도착하면 time - q.peek() == k -> server -= map.get(q.poll()); 이러면 되겠네
+        while(time < 24){
+            int p = players[time];
             
-            if (quo == 0){
-                continue;
+            while(!q.isEmpty() && time - q.peek() == k){
+                server -= map.get(q.poll());
             }
             
-            else if(quo > 0){
-                // 현재 열려있는 서버의 갯수를 알아야함
-                int rest = num % m;
-                // 그럼 반대로 서버가 작다면 추가해야함
-                if (map.get(i) < quo){
-                    int gap = quo - map.get(i);
-                    answer += gap;
-                    for(int j = 0 ; j < k; j++){
-                        map.put(i + j, map.get(i + j) + gap);
-                    }
-                }
+            // (서버 개수 + 1) * m보다 크면 서버 증설해줘야함
+            if((server + 1) * m <= p) {
+                // 그러면 p / m가 현재 필요한 서버 수
+                // n - server해서 이거를 횟수로 생각해서 gap넣어주기
+                int n = p / m;
+                int gap = n - server;
+                
+                map.put(time, gap);
+                q.offer(time);
+                answer += gap;
+                server = n;
             }
-            
+            time ++;
         }
         return answer;
     }
