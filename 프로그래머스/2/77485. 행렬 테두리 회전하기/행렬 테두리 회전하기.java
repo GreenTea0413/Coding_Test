@@ -1,53 +1,61 @@
 import java.util.*;
+
 class Solution {
     public int[] solution(int rows, int columns, int[][] queries) {
         List<Integer> answer = new ArrayList<>();
-        
         int[][] arr = new int[rows][columns];
+        
+        // 1,2,3,4,5,6
+        // 7,8,9,... 채워주기
         for(int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
+            for(int j = 0; j < columns; j++){
                 arr[i][j] = i * columns + j + 1;
             }
         }
         
-        for(int[] query : queries){
-            // 2,2  4,5
-            int startX = query[1] - 1;
-            int startY = query[0] - 1;
-            int endX = query[3] - 1;
-            int endY = query[2] - 1;
+        for(int[] q : queries){
+            // 2,2,5,4
+            // 실제로는 [1][1] ~ [4][3]까지임
+            int startX = q[0] - 1;
+            int startY = q[1] - 1;
+            int endX = q[2] - 1;
+            int endY = q[3] - 1;
             
-            // 8
-            // 배열에서는 앞이 Y, 뒤가 X임
-            int temp = arr[startY][startX];
-            int min = temp;
+            // 시작점을 기준으로 한칸씩 당기기
+            int start = arr[startX][startY];
             
-            // 왼쪽
-            for(int i1 = startY; i1 < endY; i1++){
-                arr[i1][startX] = arr[i1 + 1][startX];
-                min = Math.min(min, arr[i1][startX]);
+            // 최소값을 구하기 위한 값
+            int min = start;
+            
+            // 왼쪽 라인부터 위로 한칸씩
+            for(int x = startX; x < endX; x++){
+                arr[x][startY] = arr[x + 1][startY];
+                min = Math.min(arr[x + 1][startY], min);
             }
             
-            // 아래쪽
-            for(int i2 = startX; i2 < endX; i2++){
-                arr[endY][i2] = arr[endY][i2 + 1];
-                min = Math.min(min, arr[endY][i2]);
-            }
-            // 오른쪽
-            for(int i3 = endY; i3 > startY; i3--){
-                arr[i3][endX] = arr[i3 - 1][endX];
-                min = Math.min(min, arr[i3][endX]);
+            // 밑 라인 왼쪽으로
+            for(int y = startY; y < endY; y++){
+                arr[endX][y] = arr[endX][y + 1];
+                min = Math.min(arr[endX][y + 1], min);
             }
             
-            // 위쪽
-            for(int i4 = endX; i4 > startX + 1; i4--){
-                arr[startY][i4] = arr[startY][i4 - 1];
-                min = Math.min(min, arr[startY][i4]);
+            // 으론쪽 라인 아래로
+            for(int x = endX; x > startX; x--){
+                arr[x][endY] = arr[x - 1][endY];
+                min = Math.min(arr[x - 1][endY], min);
             }
             
-            arr[startY][startX + 1] = temp;
+            // 이제 마지막 윗라인 오른쪽으로
+            for(int y = endY; y > startY; y--){
+                arr[startX][y] = arr[startX][y - 1];
+                min = Math.min(arr[startX][y - 1], min);
+            }
+            
+            //여기서 다시 8넣어주기
+            arr[startX][startY + 1] = start;
             answer.add(min);
         }
+        
         return answer.stream().mapToInt(i -> i).toArray();
     }
 }
