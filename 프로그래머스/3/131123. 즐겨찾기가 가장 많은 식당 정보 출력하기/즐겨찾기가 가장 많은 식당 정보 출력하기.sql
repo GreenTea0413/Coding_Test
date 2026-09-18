@@ -1,11 +1,8 @@
 -- 코드를 입력하세요
--- 음식 종류, ID, 식당 이름, 즐겨찾기수를 조회
-SELECT FOOD_TYPE, REST_ID, REST_NAME, FAVORITES
-from rest_info r1
-where favorites = (
-    select max(favorites)
-    from rest_info r2
-    group by food_type
-    having r1.food_type = r2.food_type
-)
-order by food_type desc;
+SELECT i.FOOD_TYPE, i.REST_ID, i.REST_NAME, i.FAVORITES
+from REST_INFO i join (
+    select FOOD_TYPE, REST_ID, max(FAVORITES) as total
+    from REST_INFO
+    group by FOOD_TYPE
+) m on i.FOOD_TYPE = m.FOOD_TYPE and i.FAVORITES = m.total
+order by FOOD_TYPE desc;
