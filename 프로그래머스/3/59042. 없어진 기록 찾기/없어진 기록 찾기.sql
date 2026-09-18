@@ -1,6 +1,5 @@
-SELECT o.ANIMAL_ID, o.NAME
-FROM ANIMAL_OUTS o
-LEFT JOIN ANIMAL_INS i
-  ON o.ANIMAL_ID = i.ANIMAL_ID
-WHERE i.ANIMAL_ID IS NULL
-ORDER BY o.ANIMAL_ID;
+-- 코드를 입력하세요
+SELECT o.animal_id, o.name
+from ANIMAL_INS i right join ANIMAL_OUTS o on i.ANIMAL_ID = o.ANIMAL_ID
+where i.DATETIME is null
+order by animal_id
