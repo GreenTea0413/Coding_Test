@@ -1,8 +1,23 @@
--- 코드를 작성해주세요
-
-select SUM(g.SCORE) as SCORE, e.EMP_NO, e.EMP_NAME, e.POSITION, e.EMAIL
-from HR_EMPLOYEES e 
-left join HR_GRADE g on e.EMP_NO = g.EMP_NO
-group by e.EMP_NO, e.EMP_NAME, e.POSITION, e.EMAIL
-order by SCORE DESC
-limit 1;
+SELECT t.SCORE,
+       e.EMP_NO,
+       e.EMP_NAME,
+       e.POSITION,
+       e.EMAIL
+FROM HR_EMPLOYEES e
+JOIN (
+    SELECT EMP_NO,
+           SUM(SCORE) AS SCORE
+    FROM HR_GRADE
+    WHERE YEAR = 2022
+    GROUP BY EMP_NO
+) t
+ON e.EMP_NO = t.EMP_NO
+WHERE t.SCORE = (
+    SELECT MAX(SCORE)
+    FROM (
+        SELECT SUM(SCORE) AS SCORE
+        FROM HR_GRADE
+        WHERE YEAR = 2022
+        GROUP BY EMP_NO
+    ) x
+);
