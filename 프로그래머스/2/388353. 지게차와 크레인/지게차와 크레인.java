@@ -1,75 +1,90 @@
 import java.util.*;
+
 class Solution {
     public int solution(String[] storage, String[] requests) {
-        int n = storage.length;
-        int m = storage[0].length();
+        int answer = 0;
         
-        char[][] maps = new char[n + 2][m + 2];
-        for(int i = 1; i < n + 1; i++){
-            for(int j = 1; j < m + 1; j++){
-                maps[i][j] = storage[i - 1].charAt(j - 1);
+        // 탈출 할 수 있는 것들의 좌표만 구하고
+        // 빼는건 마지막에 한번에 하기
+        // 끝 테두리를 비워놓기 그러면 좌표 0이랑 xLen + 1까지 가면 탈출 성공한거니까
+        int xLen = storage.length;
+        int yLen = storage[0].length();
+        char[][] arr = new char[xLen + 2][yLen + 2];
+        for(int i = 0; i < xLen + 2; i++) Arrays.fill(arr[i], '.');
+        
+        for(int i = 1; i <= xLen; i++){
+            for(int j = 1; j <= yLen; j++){
+                arr[i][j] = storage[i - 1].charAt(j - 1);
             }
         }
         
-        // char는 비어있으면 \0과 비교하면 된다
-        // \0이 중간에 들어갈 수 도 있으니 주변에 reachable 도달가능 한지를 비교
-        int answer = n * m;
-        int[] dx = {0,0,1,-1};
-        int[] dy = {1,-1,0,0};
+        int[][] d = {{0,1}, {0,-1}, {1,0}, {-1,0}};
         
-        for(String re : requests){
-            // 치울 목록 배열
-            List<int[]> list = new ArrayList<>();
-            
-            // 이걸로 도달 할 수 있는지 확인
-            boolean[][] reachable = new boolean[n + 2][m + 2];
-            Queue<int[]> q = new LinkedList<>();
-            
-            q.offer(new int[]{0, 0});
-            reachable[0][0] = true;
-            
-            while(!q.isEmpty()){
-                int[] now = q.poll();
-                for(int i =0; i < 4; i++){
-                    int nx = now[0] + dx[i];    
-                    int ny = now[1] + dy[i];
-                    
-                    if(nx < 0 || nx >= n + 2 || ny < 0 || ny >= m + 2) continue;
-                    if(maps[nx][ny] == '\0' && !reachable[nx][ny]){
-                        reachable[nx][ny] = true;
-                        q.offer(new int[]{nx,ny});
+        for(String req : requests){
+            char target = req.charAt(0);
+            // 2개짜리는 그냥 다 없애버리면 됨
+            if(req.length() == 2) {
+                for(int i = 1; i <= xLen; i++){
+                    for(int j = 1; j <= yLen; j++){
+                        if(arr[i][j] == target){
+                            arr[i][j] = '.';
+                        }
                     }
                 }
             }
             
-            
-            if(re.length() == 1){
-                for(int i = 1; i < n + 1; i++){
-                    for(int j = 1; j < m + 1; j++){
-                        if(maps[i][j] == re.charAt(0)){
-                            if(reachable[i][j-1] || reachable[i][j+1] ||
-                               reachable[i-1][j] || reachable[i+1][j]){
-                                list.add(new int[]{i, j});
+            // 아니면 이제 여기서 탈출 가능한 exit에 여기오면 탈출 가능한 곳 정해놓기
+            else{
+                Queue<int[]> q = new LinkedList<>();
+                boolean[][] exit = new boolean[xLen + 2][yLen + 2];
+                q.offer(new int[]{0,0});
+                exit[0][0] = true;
+                
+                while(!q.isEmpty()){
+                    int[] now = q.poll();
+                    
+                    for(int i = 0; i < 4; i++){
+                        int nx = now[0] + d[i][0];
+                        int ny = now[1] + d[i][1];
+                        
+                        if(nx < 0 || nx >= xLen + 2 || ny < 0 || ny >= yLen + 2) continue;
+                        if(exit[nx][ny]) continue;
+                        
+                        if(arr[nx][ny] == '.') {
+                            exit[nx][ny] = true;
+                            q.offer(new int[]{nx,ny});
+                        }
+                    }
+                }
+                
+                // 그러면 이제 우리가 원래 값이 있는 범위에서 시작해서
+                // 주변에 .이 있으면 삭제목록에 담기
+                List<int[]> removeList = new ArrayList<>();
+               for(int i = 1; i <= xLen; i++){
+                    for(int j = 1; j <= yLen; j++){
+                        if(arr[i][j] != target) continue;
+                        
+                        for(int k = 0; k < 4; k++){
+                            int nx = i + d[k][0];
+                            int ny = j + d[k][1];
+                            
+                            if(exit[nx][ny]){
+                                removeList.add(new int[]{i, j});
+                                break;
                             }
                         }
                     }
                 }
                 
-                for(int[] xy : list){
-                    maps[xy[0]][xy[1]] = '\0';
-                    answer--;
+                for(int[] rl : removeList){
+                    arr[rl[0]][rl[1]] = '.';
                 }
             }
-            // 2글자면 그냥 다 치워버리면 됨
-            else{
-                for(int i = 1; i < n + 1; i++){
-                    for(int j = 1; j < m + 1; j++){
-                        if(maps[i][j] == re.charAt(0)){
-                            maps[i][j] = '\0';
-                            answer--;
-                        }
-                    }
-                }
+        }
+        
+        for(int i = 1; i <= xLen; i++){
+            for(int j = 1; j <= yLen; j++){
+                if(arr[i][j] != '.') answer++;
             }
         }
         
