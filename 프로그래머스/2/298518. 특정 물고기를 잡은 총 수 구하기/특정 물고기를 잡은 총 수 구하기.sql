@@ -1,3 +1,4 @@
+-- 코드를 작성해주세요
 select count(*) as FISH_COUNT
-from FISH_NAME_INFO n join FISH_INFO i on n.FISH_TYPE = i.FISH_TYPE
-where n.fish_name in ('BASS', 'SNAPPER');
+from FISH_INFO i join FISH_NAME_INFO n on i.FISH_TYPE = n.FISH_TYPE
+where n.FISH_NAME = 'BASS' or n.FISH_NAME = 'SNAPPER';
