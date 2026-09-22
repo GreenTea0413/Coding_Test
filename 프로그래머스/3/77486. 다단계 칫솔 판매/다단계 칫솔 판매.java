@@ -2,47 +2,40 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
-        int l = enroll.length;
-        int[] answer = new int[l];
-        // <자식, 부모> 1 : 1 매칭
-        // 밑에는 이제 idx 담아놓을 곳
-        Map<String, String> nmap = new HashMap<>();
-        Map<String, Integer> imap = new HashMap<>();
+        // enroll에서 가져오는 이름과 idx 저장
+        Map<String, Integer> indexMap = new HashMap<>();
+        // 자식, 부모이름 저장
+        Map<String, String> parentMap = new HashMap<>();
         
-        // young -> edward
-        // young -> 7
-        for(int i = 0; i < l; i++){
-            String e = enroll[i];
-            String r = referral[i];
-            nmap.put(e, r);
-            imap.put(e, i);
+        // 그래야 seller에서 자식에 대해서 부모 타고가고 거기서 그 사람 이름 idx 꺼내서 result에 적용
+        int len = enroll.length;
+        int[] answer = new int[len];
+        
+        for(int i = 0; i < len; i++){
+            indexMap.put(enroll[i], i);
+            parentMap.put(enroll[i], referral[i]);
         }
         
-        // 이제 seller 하나씩 꺼내서 밑에서 부터 쭈욱 올라오면서 answer에다가 값 넣어야함
         for(int i = 0; i < seller.length; i++){
-            String key = seller[i];
-            int num = amount[i] * 100;
-            // young의 idx위치와 판 가격을 넣음
-            Queue<int[]> q = new LinkedList<>();
-            q.offer(new int[]{imap.get(key), num});
+            int a = amount[i] * 100;
+            String s = seller[i];
             
-            while(!q.isEmpty()){
-                // 7, 1200이 처음에 오는데
-                int now[] = q.poll();
-                int idx = now[0]; 
-                int remain = now[1] / 10;
-                int n = now[1] - remain;
-                answer[idx] += n;
+            // 처음에 값 가져오면 계속 위로 거슬러가야함
+            while(a > 0){
+                // 하지만 -가 오면 최상단이니까 종료
+                if(s.equals("-")) break;
+                // 현재 사람이 판매한거에서 90%는 본인의 몫
+                // 그리고 이전에 값에서 - 90%한 값
+                // 1200 -> 1080이 young에 들어가고 120이 다음 
+                int idx = indexMap.get(s);
+                int rest = a / 10;
                 
-                if(remain == 0) break;
-                // 다음 부모를 찾아서 young의 부모 이름을 찾음 -> edward
-                // 그럼 edward의 idx를 찾아서 remain이랑 같이 넘김
-                String p = nmap.get(enroll[idx]);
-                // 하지만 하다보면 -가 나오는데 이때 멈춰야함
-                if(p.equals("-")) break;
-                q.offer(new int[]{imap.get(p), remain});
+                answer[idx] += a - rest;
+                a = rest;
+                s = parentMap.get(s);
             }
         }
+        
         return answer;
     }
 }
