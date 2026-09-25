@@ -4,29 +4,27 @@ class Solution {
     List<List<Integer>> graph = new ArrayList<>();
     int answer = 0;
     public int solution(int[] info, int[][] edges) {
-        int n = info.length;
-        for(int i = 0; i <= n; i++) graph.add(new ArrayList<>());
+        for(int i = 0; i <= info.length; i++) graph.add(new ArrayList<>());
         for(int[] e : edges) graph.get(e[0]).add(e[1]);
         
         List<Integer> path = new ArrayList<>();
-        for(int p : graph.get(0)) path.add(p);
+        for(int n : graph.get(0)) path.add(n);
         
-        dfs(1, 0, path, info);
-        
+        dfs(1, 0, info, path);
         return answer;
     }
     
-    public void dfs(int sheep, int wolf, List<Integer> path, int[] info){
+    void dfs(int sheep, int wolf, int[] info, List<Integer> path){
         if(sheep <= wolf) return;
-        else answer = Math.max(answer, sheep);
+        else answer = Math.max(sheep, answer);
         
         for(int p : path){
-            List<Integer> c = new ArrayList<>(path);
-            c.remove(Integer.valueOf(p));
-            c.addAll(graph.get(p));
+            List<Integer> temp = new ArrayList<>(path);
+            temp.remove(Integer.valueOf(p));
+            temp.addAll(graph.get(p));
             
-            if(info[p] == 0) dfs(sheep + 1, wolf, c, info);
-            else dfs(sheep, wolf + 1, c, info);
+            if(info[p] == 0) dfs(sheep + 1, wolf, info, temp);
+            else dfs(sheep, wolf + 1, info, temp);
         }
     }
 }
