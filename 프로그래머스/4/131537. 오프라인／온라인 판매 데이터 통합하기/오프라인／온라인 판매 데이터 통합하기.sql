@@ -1,0 +1,13 @@
+-- 코드를 입력하세요
+-- 두 테이블을 각각 출력해야함
+SELECT SALES_DATE, PRODUCT_ID, USER_ID, SALES_AMOUNT
+from (SELECT SALES_DATE, PRODUCT_ID, USER_ID, SALES_AMOUNT
+from ONLINE_SALE
+where date_format(SALES_DATE, "%Y-%m") = '2022-03'
+
+union all
+
+SELECT SALES_DATE, PRODUCT_ID, null as USER_ID, SALES_AMOUNT
+from OFFLINE_SALE
+where date_format(SALES_DATE, "%Y-%m") = '2022-03') t
+order by SALES_DATE, PRODUCT_ID, USER_ID;
