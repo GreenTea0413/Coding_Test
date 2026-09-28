@@ -1,0 +1,17 @@
+-- 코드를 입력하세요
+-- 차 종류가 트럭
+-- 기록 별로 대여 금액
+
+SELECT HISTORY_ID, FLOOR(
+    C.DAILY_FEE * (DATEDIFF(H.END_DATE, H.START_DATE) + 1) 
+    * (100 - IFNULL(D.DISCOUNT_RATE, 0)) / 100) AS FEE
+from CAR_RENTAL_COMPANY_CAR C join CAR_RENTAL_COMPANY_RENTAL_HISTORY H on C.car_id = H.car_id
+left join CAR_RENTAL_COMPANY_DISCOUNT_PLAN D on C.CAR_TYPE = D.CAR_TYPE
+AND D.DURATION_TYPE =
+    CASE
+        WHEN DATEDIFF(H.END_DATE, H.START_DATE) + 1 >= 90 THEN '90일 이상'
+        WHEN DATEDIFF(H.END_DATE, H.START_DATE) + 1 >= 30 THEN '30일 이상'
+        WHEN DATEDIFF(H.END_DATE, H.START_DATE) + 1 >= 7  THEN '7일 이상'    
+    END
+where C.CAR_TYPE = '트럭'
+order by FEE desc, HISTORY_ID desc;
