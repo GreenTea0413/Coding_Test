@@ -1,10 +1,10 @@
-SELECT 
-    ID,
-    CASE NTILE(4) OVER (ORDER BY SIZE_OF_COLONY DESC)
-        WHEN 1 THEN 'CRITICAL'
-        WHEN 2 THEN 'HIGH'
-        WHEN 3 THEN 'MEDIUM'
-        WHEN 4 THEN 'LOW'
-    END AS COLONY_NAME
-FROM ECOLI_DATA
-ORDER BY ID;
+-- 코드를 작성해주세요
+select ID, 
+case NTILE(4) OVER (ORDER BY SIZE_OF_COLONY DESC)
+    when 1 then 'CRITICAL'
+    when 2 then 'HIGH'
+    when 3 then 'MEDIUM'
+    when 4 then 'LOW'
+end as COLONY_NAME
+from ECOLI_DATA
+order by ID;
