@@ -1,46 +1,49 @@
 import java.util.*;
 
 class Solution {
-    Set<Set<String>> set = new HashSet<>();
+    Set<Set<String>> answer = new HashSet<>();
     String[] user;
     String[] ban;
     int uLen;
     int bLen;
     public int solution(String[] user_id, String[] banned_id) {
-        user = user_id; ban = banned_id;  uLen = user_id.length; bLen = banned_id.length;
-        // dfs 백트래킹 활용해서 전체 경우의 수 만들기
-        dfs(new boolean[uLen], 0, new HashSet<>());
+        // [fradi, abc123] [frodo, abc123]
+        user = user_id; ban = banned_id;
+        uLen = user_id.length; bLen = banned_id.length;
         
-        // 이제 set에 모은걸로 값 구하기
-        return set.size();
+        dfs(new HashSet<>(), 0, new boolean[uLen]);
+        
+        return answer.size();
     }
     
-    void dfs(boolean[] v, int depth, Set<String> cur){
+    void dfs(Set<String> set, int depth, boolean[] v){
         if(depth == bLen){
-            set.add(new HashSet<>(cur));
+            answer.add(new HashSet<>(set));
             return;
         }
         
         for(int i = 0; i < uLen; i++){
-            if(!v[i] && check(user[i], ban[depth])){
-                cur.add(user[i]);
-                v[i] = true;
+            if(check(ban[depth], user[i])){
+                if(!v[i]){
+                    v[i] = true;
+                    set.add(user[i]);
+                    dfs(set, depth + 1, v);
 
-                dfs(v, depth + 1, cur);
-
-                v[i] = false;
-                cur.remove(user[i]);
+                    set.remove(user[i]);
+                    v[i] = false;
+                }
             }
         }
     }
     
-    boolean check(String u, String b){
-        if(u.length() != b.length()) return false;
+    boolean check(String a, String b){
+        if(a.length() != b.length()) return false;
         
-        for(int i = 0; i < b.length(); i++){
-            if(b.charAt(i) =='*') continue;
-            else if(u.charAt(i) != b.charAt(i)) return false;
+        for(int i = 0; i < a.length(); i++){
+            if(a.charAt(i) == '*') continue;
+            if(a.charAt(i) != b.charAt(i)) return false;
         }
+        
         return true;
-    }
+    }    
 }
