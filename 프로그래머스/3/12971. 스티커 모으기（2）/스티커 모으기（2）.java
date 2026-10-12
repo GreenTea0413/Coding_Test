@@ -1,26 +1,27 @@
 class Solution {
-    int len;
     public int solution(int sticker[]) {
-        len = sticker.length;
-        if(len == 1) return sticker[0];
+        int len = sticker.length;
         
-        return Math.max(dp(0, len - 2, sticker), dp(1, len - 1, sticker));
+        if(len == 1) return sticker[0];
+        if(len == 2) return Math.max(sticker[0], sticker[1]);
+        
+        int num1 = dp(sticker, 0, len - 2);
+        int num2 = dp(sticker, 1, len - 1);
+
+        return Math.max(num1, num2);
     }
     
-    int dp (int start, int end, int[] sticker){
-        // 만약에 같으면 이렇게 종료 시켜줘야함
-        if(start == end) return sticker[start];
-        
-        int gap = end - start + 1;
-        int[] arr = new int[gap];
-        
+    int dp(int[] sticker, int start, int end){
+        // 0 6
+        int len = end - start + 1;
+        int[] arr = new int[len];
         arr[0] = sticker[start];
         arr[1] = Math.max(arr[0], sticker[start + 1]);
         
-        for(int i = 2; i < gap; i++){
+        for(int i = 2; i < len; i++){
             arr[i] = Math.max(arr[i - 1], arr[i - 2] + sticker[start + i]);
-        }
+        } 
         
-        return arr[gap - 1];
+        return arr[len - 1];
     }
 }
