@@ -1,50 +1,49 @@
+import java.util.*;
+
 class Solution {
-    public String solution(String play_time, String adv_time, String[] logs) {
-        String answer = "";        
-        // 100 * 3600
-        // 누적합 문제
-        int play = (int)toNum(play_time);
-        int adv = (int)toNum(adv_time);
-        long[] dp = new long[play + 1];
-        
-        // 이 문제는 int로 하면 오버플로우 발생함
-        for(String log : logs){
-            String[] l = log.split("-");
-            int start = (int)toNum(l[0]);
-            int end = (int)toNum(l[1]);
+    public String solution(String play_time, String adv_time, String[] logs) {        
+        // 플레이 타임을 초로 바꿔서 배열 크기로 정하기
+        int p = (int)toSec(play_time);
+        int a = (int)toSec(adv_time);
+        long[] pArr = new long[p + 1];
+        // 누적합으로 처음과 끝에 값을 넣어서 배열에 +1 -1을 기준 세우기
+        for(String l : logs){
+            String[] s = l.split("-");
             
-            dp[start]++;
-            dp[end]--;
+            int start = (int)toSec(s[0]);
+            int end = (int)toSec(s[1]);
+            
+            pArr[start] += 1;
+            pArr[end] -= 1;
         }
         
-        for(int i = 1; i <= play; i++){
-            dp[i] += dp[i - 1];
-        }
-        for(int i = 1; i <= play; i++){
-            dp[i] += dp[i - 1];
-        }
+        // 그 다음 가장 많이 시청하는 곳에서 광고 넣기!
+        for(int i = 1; i <= p; i++) pArr[i] += pArr[i - 1];
+        for(int i = 1; i <= p; i++) pArr[i] += pArr[i - 1];
         
-        long max = dp[adv - 1];
-        long startTime = 0;
+        // pArr에 광고 플레이 타임을 
+        long max = pArr[a - 1];
+        long startAdv = 0;
         
-        for(int i = adv; i < play; i++){
-            long cur = dp[i] - dp[i - adv];
+        for(int i = a; i < p; i++){
+            long cur = pArr[i] - pArr[i - a];
             
             if(cur > max){
                 max = cur;
-                startTime = i - adv + 1;
+                startAdv = i - a + 1;
             }
         }
         
-        int h = (int) startTime / 3600;
-        int m = (int) startTime % 3600 / 60;
-        int s = (int) startTime % 60;
+        String answer = "";
+        int h = (int)startAdv / 3600;
+        int m = (int)startAdv % 3600 / 60;
+        int s = (int)startAdv % 60;
         
-        return String.format("%02d:%02d:%02d", h,m,s);
+        return String.format("%02d:%02d:%02d",h,m,s);
     }
     
-    long toNum(String str){
+    long toSec(String str){
         String[] s = str.split(":");
-        return Long.parseLong(s[0]) * 3600 + Long.parseLong(s[1]) * 60 + Long.parseLong(s[2]);
+        return Long.parseLong(s[0]) * 3600 +  Long.parseLong(s[1]) * 60 +  Long.parseLong(s[2]);
     }
 }
