@@ -1,36 +1,35 @@
 import java.util.*;
 
 class Solution {
-    public int[] solution(String[] operations) {
-        int[] answer = new int[2];
-        
-        PriorityQueue<Integer> maxP = new PriorityQueue<>((a, b) -> (b - a));
-        PriorityQueue<Integer> minP = new PriorityQueue<>();
+    public int[] solution(String[] operations) {        
+        PriorityQueue<Integer> maxPQ = new PriorityQueue<>((a, b) -> (b - a));
+        PriorityQueue<Integer> minPQ = new PriorityQueue<>();
         
         for(String op : operations){
             String[] s = op.split(" ");
-            int n = Integer.parseInt(s[1]);
             
-            if(s[0].equals("I")){
-                maxP.offer(n);
-                minP.offer(n);
+            if(s[0].equals("I")) {
+                maxPQ.offer(Integer.parseInt(s[1]));
+                minPQ.offer(Integer.parseInt(s[1]));
             }
             else{
-                if(maxP.isEmpty()) continue;
-                if(n == 1){
-                    int m = maxP.poll();
-                    minP.remove(Integer.valueOf(m));
+                if(maxPQ.isEmpty()) continue;
+                
+                if(s[1].equals("-1")){
+                    int min = minPQ.poll();
+                    maxPQ.remove(Integer.valueOf(min));
                 }
                 else{
-                    int m = minP.poll();
-                    maxP.remove(Integer.valueOf(m));
+                    int max = maxPQ.poll();
+                    minPQ.remove(Integer.valueOf(max));
                 }
             }
         }
         
-        if(!maxP.isEmpty()){
-            answer[0] = maxP.poll();
-            answer[1] = minP.poll();
+        int[] answer = new int[2];
+        if(!maxPQ.isEmpty()) { 
+            answer[0] = maxPQ.poll();
+            answer[1] = minPQ.poll();
         }
         return answer;
     }
