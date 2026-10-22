@@ -3,26 +3,26 @@ class Solution {
         int answer = n + 1;
         
         while(true){
-            if(isCheck(n, answer)){ return answer;}
-            answer += 1;
+            if(check(n, answer)) break;
+            answer++;
         }
+        return answer;
     }
     
-    public boolean isCheck (int n, int next){
-        if (toBin(n) == toBin(next)) return true;
+    public boolean check(int n, int answer){
+        if(bin(n) == bin(answer)) return true;
         return false;
     }
     
-    public int toBin(int num){
-        int countOne = 0;
+    public int bin(int num){
+        int count = 0;
         
         while(num > 0){
             int r = num % 2;
-            if (r == 1){
-                countOne += 1;
-            }
-            num /= 2;
+            
+            if(r == 1) count ++;
+            num = num / 2;
         }
-        return countOne;
+        return count;
     }
 }
