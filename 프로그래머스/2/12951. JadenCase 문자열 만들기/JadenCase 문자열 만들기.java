@@ -13,7 +13,7 @@ class Solution {
                 answer.append(t.substring(1));
             }
             
-            if(i < arr.length - 1) answer.append(" ");
+            if(i != arr.length - 1) answer.append(" ");
         }
         
         return answer.toString();
