@@ -1,19 +1,28 @@
 class Solution {
     public int solution(int n) {
         int answer = 0;
-
-        for(int i = 1; i <= n; i++){
-            // 1부터 시작해서 쭈우우욱 더하기
-            int count = i;
-            int inc = i + 1;
-            while(true){
-                if(count == n) {answer ++; break;}
-                else if(count > n) break;
-                count += inc;
-                inc++;
+        
+        int left = 1;
+        int right = 1;
+        int num = 0;
+        
+        while(left <= n){
+            if(num < n) {
+                num += right;
+                right++;
+            }
+            
+            else if(num > n) {
+                num -= left;
+                left ++;
+            }
+            
+            else if(num == n) {
+                answer ++;
+                num -= left;
+                left ++;
             }
         }
-        
         return answer;
     }
 }
