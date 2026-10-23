@@ -1,8 +1,8 @@
 -- 코드를 입력하세요
---  년, 월, 성별 별
-SELECT year(o.SALES_DATE) as YEAR, month(o.SALES_DATE) as MONTH, u.GENDER, 
-COUNT(DISTINCT u.USER_ID) AS USERS
-from USER_INFO u join ONLINE_SALE o on u.USER_ID = o.USER_ID
-where u.GENDER is not null
-group by YEAR, MONTH, u.GENDER
-order by YEAR, MONTH, u.GENDER;
+SELECT YEAR(o.SALES_DATE) as YEAR, MONTH(o.SALES_DATE) as MONTH, i.GENDER as GENDER, 
+count(DISTINCT o.USER_ID) as USERS
+from USER_INFO i
+join ONLINE_SALE o on i.USER_ID = o.USER_ID
+group by YEAR(o.SALES_DATE), MONTH(o.SALES_DATE), i.GENDER
+having i.GENDER is not null
+order by YEAR, MONTH, GENDER;
