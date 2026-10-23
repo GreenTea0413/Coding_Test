@@ -1,6 +1,5 @@
 -- 코드를 입력하세요
-SELECT ANIMAL_TYPE, count(*)as count
-from ANIMAL_INS
-where ANIMAL_TYPE = 'Cat' or ANIMAL_TYPE = 'Dog'
-group by ANIMAL_TYPE
-order by ANIMAL_TYPE;
+SELECT ANIMAL_TYPE, COUNT(*) AS 'count'
+FROM ANIMAL_INS
+GROUP BY ANIMAL_TYPE
+ORDER BY ANIMAL_TYPE;
