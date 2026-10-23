@@ -3,12 +3,11 @@ class Solution {
         int[] answer = new int[2];
         int sum = brown + yellow;
         
-        for(int h = 1; h < sum; h++){
-            if(sum % h == 0){
-                int s = sum / h;
-                if(s < h) continue;
-                if((s - 2) * (h - 2) == yellow){
-                    answer[0] = s; answer[1] = h;
+        for(int i = 1; i < sum; i++){
+            if(sum % i == 0){
+                int s = sum / i;
+                if(s >= i){
+                    if((s - 2) * (i - 2) == yellow) return new int[]{s, i};
                 }
             }
         }
