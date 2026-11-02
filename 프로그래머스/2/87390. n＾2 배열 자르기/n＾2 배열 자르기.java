@@ -1,19 +1,16 @@
-import java.util.*;
-
 class Solution {
     public int[] solution(int n, long left, long right) {
-        int size = (int)(right - left) + 1;
-        int[] answer = new int[size];
+        long gap = right - left;
+        int[] answer = new int[(int) gap + 1];
         
-        // 1 2 3
-        // 2 2 3
-        // 3 3 3
-        for(int i = 0; i < size; i++){
-            long index = left + i;
+        // 0,0 - 0 / 0, 1 - 1 / 0, 2 - 2 / 1, 0 - 3 / 1, 1 - 4 / 1, 2 - 5 /
+        for(int i = 0; i < gap + 1; i ++){
+            long idx = left + i;
             
-            int col = (int)(index / n);
-            int row = (int)(index % n);
-            answer[i] = Math.max(col, row) + 1;
+            long row = idx / n;
+            long col = idx % n;
+            
+            answer[i] = (int) (Math.max(row, col)) + 1;
         }
         
         return answer;
