@@ -1,51 +1,34 @@
 import java.util.*;
 
 class Solution {
-    Map<String, List<Integer>> map = new HashMap<>();
-    List<String> answer = new ArrayList<>();
-    boolean found = false;
-    int len;
+    String[][] tickets;
+    List<String> path = new ArrayList<>();
+    boolean[] v;
     public String[] solution(String[][] tickets) {
-        len = tickets.length;
-        Arrays.sort(tickets, (a, b) -> {
-            if(a[0].equals(b[0])) return a[1].compareTo(b[1]);
-            return a[0].compareTo(b[0]);
-        });
+        this.tickets = tickets;
+        v = new boolean[tickets.length];
+        Arrays.sort(tickets, (a, b) -> a[1].compareTo(b[1]));
         
-        for(int i = 0; i < len; i++){
-            String[] t = tickets[i];
-            
-            map.putIfAbsent(t[0], new ArrayList<>());
-            map.get(t[0]).add(i);
-        }        
-        List<String> path = new ArrayList<>();
         path.add("ICN");
-        
-        dfs(tickets, "ICN", path, 0, new boolean[len + 1]);
-        return answer.toArray(new String[0]);
+        dfs("ICN", 0);
+        return path.toArray(new String[0]);
     }
     
-    void dfs(String[][] tickets, String start, List<String> path, int depth, boolean[] v){
-        if(depth == len){
-            answer = new ArrayList<>(path);
-            found = true;
-            return;
-        }
-        if(!map.containsKey(start)) return;
+    boolean dfs(String now, int depth){
+        if(depth == tickets.length) return true;
         
-        if(!found){
-            for(int next : map.get(start)){
-                if(!v[next]){
-                    path.add(tickets[next][1]);
-                    v[next] = true;
-                    
-                    dfs(tickets, tickets[next][1], path, depth + 1, v);
+        for(int i = 0; i < tickets.length; i++){
+            if(!v[i] && tickets[i][0].equals(now)){
+                v[i] = true;
+                path.add(tickets[i][1]);
                 
-                    v[next] = false;
-                    path.remove(path.size() - 1);
-                }
+                if(dfs(tickets[i][1], depth + 1)) return true;
+                
+                v[i] = false;
+                path.remove(path.size() - 1);
             }
         }
         
+        return false;
     }
 }
