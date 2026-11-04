@@ -1,71 +1,56 @@
+import java.util.*;
+
 class Solution {
-    int[][] d = {{0, 1}, {0,-1}, {1,0},{-1,0}};
-    int[][] dt = {{1,1}, {-1,-1},{1,-1},{-1,1}};
-    
     public int[] solution(String[][] places) {
-        int len = places.length;
-        int[] answer = new int[len];
+        int[] answer = new int[5];
         
-        // 5 * 5
-        // 좌표 비교했을 때 |r1 - r2| + |c1 - c2|
-        // 기존의 상하좌우로 거르고
-        // 대각선들은 있으면 거기에 맞게 x, y -> x + 1, y + 1에 사람있으면 (x ,y + 1) ,(x + 1, y)가 X인지
-        for(int i = 0; i < len; i++){
-            boolean check = true;
-            char[][] arr = new char[5][5];
-            
-            for(int j = 0; j < 5; j++) arr[j] = places[i][j].toCharArray();
-            
-            // arr에 이제 다 담았으면 시작하기
-            for(int x = 0; x < 5; x++){
-                if(!check) break;
-                for(int y = 0; y < 5; y++){
-                    // 여기서 이제 주변 검사하는거임
-                    if(!check) break;
-                    
-                    if(arr[x][y] == 'P'){
-                        for(int k = 0; k < 4; k++){
-                            int nx = x + d[k][0];
-                            int ny = y + d[k][1];
-                            
-                            if(nx < 0 || nx >= 5 || ny < 0 || ny >= 5) continue;
-                            
-                            if(arr[nx][ny] == 'P') {
-                                check = false;
-                                break;
-                            }
-                            
-                            int dx = nx + d[k][0];
-                            int dy = ny + d[k][1];
-                            
-                            if(dx < 0 || dx >= 5 || dy < 0 || dy >= 5) continue;
-                            
-                            if(arr[dx][dy] == 'P' && arr[nx][ny] != 'X') {
-                                check = false;
-                                break;
-                            }
-                        }
-                        
-                        for(int k = 0; k < 4; k++){
-                            int nx = x + dt[k][0];
-                            int ny = y + dt[k][1];
-                            
-                            if(nx < 0 || nx >= 5 || ny < 0 || ny >= 5) continue;
-                            
-                            if(arr[nx][ny] == 'P'){
-                                if(arr[nx][y] != 'X' || arr[x][ny] != 'X'){
-                                    check = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+        for(int i = 0; i < 5; i++)if(check(places[i])) answer[i] ++;
+        return answer;
+    }
+    
+    boolean check(String[] places){
+        Queue<int[]> q = new LinkedList<>();
+        
+        for(int i = 0; i < 5; i++){
+            for(int j = 0; j < 5; j++){
+                if(places[i].charAt(j) == 'P') q.offer(new int[]{i, j});
             }
-            if(check) answer[i] = 1;
-            else answer[i] = 0;
         }
         
-        return answer;
+        // 상하좌우에 일단 P있으면 바로 아웃!
+        // 그리고 대각선에 있으면 거기서 1,1이면 0,1이랑 1,0 에 X쳐져있어야함
+        int[][] d1 = {{0,1}, {1,0}, {0,-1}, {-1,0}}; 
+        int[][] d2 = {{1,1}, {1,-1}, {-1,1}, {-1,-1}};
+        
+        while(!q.isEmpty()){
+            int[] now = q.poll();
+            int x = now[0]; int y = now[1];
+            
+            for(int i = 0; i < 4; i++){
+                int nx = x + d1[i][0]; int ny = y + d1[i][1];
+                
+                if(0 > nx || 5 <= nx || 0 > ny || 5 <= ny) continue;
+                if(places[nx].charAt(ny) == 'P') return false;
+                else if(places[nx].charAt(ny) =='O'){
+                    int cx = nx + d1[i][0]; int cy = ny + d1[i][1];
+                    if(0 > cx || 5 <= cx || 0 > cy || 5 <= cy) continue;
+                    if(places[cx].charAt(cy) == 'P') return false;
+                }
+            }
+            
+            for(int i = 0; i < 4; i++){
+                int nx = x + d2[i][0]; int ny = y + d2[i][1];
+                
+                if(0 > nx || 5 <= nx || 0 > ny || 5 <= ny) continue;
+                if(places[nx].charAt(ny) == 'P'){
+                    // 3,4 -> 4,5 그러면 3,5랑 4,4확인
+                    if(places[x].charAt(ny) == 'X' && places[nx].charAt(y) == 'X') continue;
+                    else return false;
+                } 
+            }
+        }
+        
+        
+        return true;
     }
 }
