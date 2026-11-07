@@ -1,61 +1,46 @@
-import java.util.*;
-
 class Solution {
     public int[] solution(int rows, int columns, int[][] queries) {
-        List<Integer> answer = new ArrayList<>();
-        int[][] arr = new int[rows][columns];
+        int len = queries.length;
+        int[] answer = new int[len];
         
-        // 1,2,3,4,5,6
-        // 7,8,9,... 채워주기
+        int[][] arr = new int[rows][columns];
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
-                arr[i][j] = i * columns + j + 1;
+                arr[i][j] = (i * columns + j + 1);
             }
         }
         
-        for(int[] q : queries){
-            // 2,2,5,4
-            // 실제로는 [1][1] ~ [4][3]까지임
-            int startX = q[0] - 1;
-            int startY = q[1] - 1;
-            int endX = q[2] - 1;
-            int endY = q[3] - 1;
+        for(int i = 0; i < len; i++){
+            int x1 = queries[i][0] - 1;
+            int y1 = queries[i][1] - 1;
+            int x2 = queries[i][2] - 1;
+            int y2 = queries[i][3] - 1;
             
-            // 시작점을 기준으로 한칸씩 당기기
-            int start = arr[startX][startY];
+            int temp = arr[x1][y1]; 
+            int min = temp;
             
-            // 최소값을 구하기 위한 값
-            int min = start;
+            // ^
+            for(int x = x1; x < x2; x++) 
+            {arr[x][y1] = arr[x + 1][y1]; min = Math.min(min, arr[x + 1][y1]);}
             
-            // 왼쪽 라인부터 위로 한칸씩
-            for(int x = startX; x < endX; x++){
-                arr[x][startY] = arr[x + 1][startY];
-                min = Math.min(arr[x + 1][startY], min);
-            }
+            // <
+            for(int y = y1; y < y2; y++) 
+            {arr[x2][y] = arr[x2][y + 1]; min = Math.min(min, arr[x2][y + 1]);}
             
-            // 밑 라인 왼쪽으로
-            for(int y = startY; y < endY; y++){
-                arr[endX][y] = arr[endX][y + 1];
-                min = Math.min(arr[endX][y + 1], min);
-            }
+            // 아래
+            for(int x = x2; x > x1; x--) 
+            {arr[x][y2] = arr[x - 1][y2]; min = Math.min(min, arr[x - 1][y2]);}
             
-            // 으론쪽 라인 아래로
-            for(int x = endX; x > startX; x--){
-                arr[x][endY] = arr[x - 1][endY];
-                min = Math.min(arr[x - 1][endY], min);
-            }
+            // >
+            for(int y = y2; y > y1; y--) 
+            {arr[x1][y] = arr[x1][y - 1]; min = Math.min(min, arr[x1][y - 1]);}
             
-            // 이제 마지막 윗라인 오른쪽으로
-            for(int y = endY; y > startY; y--){
-                arr[startX][y] = arr[startX][y - 1];
-                min = Math.min(arr[startX][y - 1], min);
-            }
+            // 빈자리 채워주기
+            arr[x1][y1 + 1] = temp;
             
-            //여기서 다시 8넣어주기
-            arr[startX][startY + 1] = start;
-            answer.add(min);
+            // 그리고 최솟값 한거 넣어주기
+            answer[i] = min;
         }
-        
-        return answer.stream().mapToInt(i -> i).toArray();
+        return answer;
     }
 }
