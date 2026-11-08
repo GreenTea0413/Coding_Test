@@ -41,7 +41,7 @@ class Solution {
             if(nrx < 0 || nrx >= n || nry < 0 || nry >= m || 
                maze[nrx][nry] == 5 || (!rCheck && rv[nrx][nry])) continue;
             
-            if(!rCheck) rv[nrx][nry] = true;
+            rv[nrx][nry] = true;
             
             // 빨간거 먼저 옮겼ㅇ면 이제 파란거 옮기기
             for(int j = 0; j < 4; j++){        
@@ -56,11 +56,11 @@ class Solution {
                 // 그리고 파란거는 늦게 움직였으니 빨간거 위치로 가면 안됨
                 if(nbx == nrx && nby == nry) continue;
                 
-                if(!bCheck)  bv[nbx][nby] = true;
+                bv[nbx][nby] = true;
                 dfs(nrx, nry, nbx, nby, count + 1);
-                if(!bCheck)  bv[nbx][nby] = false;
+                bv[nbx][nby] = false;
              }
-            if(!rCheck)  rv[nrx][nry] = false;
+            rv[nrx][nry] = false;
         }
     }
 }
