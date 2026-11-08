@@ -36,13 +36,13 @@ class Solution {
         
         int answer = 0;
         for (int t = 0; t < maxTime; t++) {
-            Map<Integer, Integer> count = new HashMap<>();
+            Map<Integer, Integer> map = new HashMap<>();
             for (List<int[]> path : paths) {
                 if (t >= path.size()) continue;         
                 int[] p = path.get(t);
                 int key = p[0] * 101 + p[1];
-                int cnt = count.merge(key, 1, Integer::sum);
-                if (cnt == 2) answer++;                  
+                map.put(key, map.getOrDefault(key, 0) + 1);
+                if (map.get(key) == 2) answer++;                  
             }
         }
         
