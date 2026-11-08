@@ -1,65 +1,51 @@
 import java.util.*;
+
 class Solution {
     public int solution(int[][] points, int[][] routes) {
-        int answer = 0;
-        // points는 거점
-        // routes는 [4,2]면 idx point 3번째에서 1번째로 가야함
-        
-        // 그러면 각 routes에 대하여 경로를 다 기억해서 비교?
-        // 가로 먼저 움직이고 세로 움직여야함
-        List<List<int[]>> allPaths = new ArrayList<>();
+        // 이동할 때는 next에서도 1만큼 감소하거나 증가한 좌표로만 이동가능 (r, c) -> (r + 1, c), (r - 1, c)
+        // 늘 하던 상하좌우 이동 
+        // r좌표가 변하는 이동을 먼저 함
+        // 그렇게 이동하다가 만나는 횟수를 구해라
+        // 전체 경로에 따라 지나가는 길들을 쭉 저장하기
+        List<List<int[]>> paths = new ArrayList<>();
+        int maxTime = 0;
         
         for(int[] route : routes){
-            // [2,2]에서 시작
-            int[] start = points[route[0] - 1];
-            int r = start[0];
-            int c = start[1];
-            
             List<int[]> path = new ArrayList<>();
+            int r = points[route[0] - 1][0];
+            int c = points[route[0] - 1][1];
+            
             path.add(new int[]{r, c});
             
-            // route = [2,3,4,5]
-            // 4번 반복해야하니까 route길이
-            // target은 i에 대해서 다음 목적지 points
-            for(int i = 1; i < route.length; i++){
-                int[] target = points[route[i] - 1];
-                
-                // 위아래 먼저 움직이기 r부터 움직이라고 했음
-                while(r != target[0]){
-                    r += (target[0] > r) ? 1 : -1; 
+            for (int k = 1; k < route.length; k++) {
+                int tr = points[route[k] - 1][0];
+                int tc = points[route[k] - 1][1];
+
+                while (r != tr) {                        
+                    r += (tr > r) ? 1 : -1;
                     path.add(new int[]{r, c});
                 }
-                
-                while(c != target[1]){
-                    c += (target[1] > c) ? 1 : -1;
+                while (c != tc) {                         
+                    c += (tc > c) ? 1 : -1;
                     path.add(new int[]{r, c});
                 }
             }
-            // 그러면 이제 모든 경로를 기록함
-            allPaths.add(path);
-        }
-        
-        int maxTime = 0;
-        for (List<int[]> path : allPaths) {
+            paths.add(path);
             maxTime = Math.max(maxTime, path.size());
         }
         
-        for(int t = 0; t < maxTime; t++){
-            Map<String, Integer> map = new HashMap<>();
-            
-            for(List<int[]> path : allPaths){
-                if(t < path.size()){
-                    int x = path.get(t)[0];
-                    int y = path.get(t)[1];
-                    
-                    String temp = String.valueOf(x) + "," + String.valueOf(y);
-                    map.put(temp, map.getOrDefault(temp, 0) + 1);
-                }
-            }
-            for(int count : map.values()){
-                if(count >= 2) answer++;
+        int answer = 0;
+        for (int t = 0; t < maxTime; t++) {
+            Map<Integer, Integer> count = new HashMap<>();
+            for (List<int[]> path : paths) {
+                if (t >= path.size()) continue;         
+                int[] p = path.get(t);
+                int key = p[0] * 101 + p[1];
+                int cnt = count.merge(key, 1, Integer::sum);
+                if (cnt == 2) answer++;                  
             }
         }
+        
         return answer;
     }
 }
