@@ -1,26 +1,16 @@
-import java.util.*;
-
 class Solution {
     public String solution(int n) {
         String answer = "";
-        
-        // 1 2 4 밖에 못씀
-        // 1 2 4 11 12 14 -> 나눴을 때 나머지가 0 1 2에 따라 4 1 2 부여해서 계속 쌓아가면 될듯
+        if(n == 1) return "1";
         while(n > 0){
+            n --;
+            // 3으로 나누면 1, 2, 3 반복되게 해서 0이면 1 / 1 이면 2 / 2 이면 4
             int rest = n % 3;
+            if(rest == 0) answer = "1" + answer;
+            if(rest == 1) answer = "2" + answer;
+            if(rest == 2) answer = "4" + answer;
             
-            if(rest == 0){
-                answer = "4" + answer;
-                n = n / 3 - 1;
-            }
-            else if(rest == 1){
-                answer = "1" + answer;
-                n /= 3;
-            }
-            else{
-                answer = "2" + answer;
-                n /= 3;
-            }
+            n = n / 3;
         }
         return answer;
     }
