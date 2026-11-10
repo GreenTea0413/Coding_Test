@@ -2,33 +2,26 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String today, String[] terms, String[] privacies) {
-        List<Integer> answer = new ArrayList<>();
-        Map<String, Integer> termMap = new HashMap<>();
-        
-        int to = toNum(today);
-        
+        Map<String, Integer> map = new HashMap<>();
         for(String t : terms){
-            String[] s = t.split(" ");
-            termMap.put(s[0], Integer.parseInt(s[1]));
+            String[] arr = t.split(" ");
+            map.put(arr[0], Integer.parseInt(arr[1]));
         }
-        
+        int to = date(today);
+        List<Integer> answer = new ArrayList<>();
         for(int i = 0; i < privacies.length; i++){
-            String[] s = privacies[i].split(" ");
-            int time = toNum(s[0]);
-            String type = s[1];
+            String[] arr = privacies[i].split(" ");
+            int p = date(arr[0]);
             
-            int dead = time + termMap.get(type) * 28;
-            System.out.printf("%d %d", to, dead);
-            if(to >= dead){
-                answer.add(i + 1);
-            }
+            if(to >= p + map.get(arr[1]) * 28) answer.add(i + 1);
         }
-        
+               
         return answer.stream().mapToInt(i -> i).toArray();
     }
-    int toNum(String s){
-        String[] str = s.split("[.]");
-        return Integer.parseInt(str[0]) * 12 * 28 
-            + Integer.parseInt(str[1]) * 28 + Integer.parseInt(str[2]);
+    
+    public int date(String s){
+        String[] arr = s.split("\\.");
+        return Integer.parseInt(arr[0]) * 12 * 28 + Integer.parseInt(arr[1]) * 28 
+            + Integer.parseInt(arr[2]);
     }
 }
