@@ -2,62 +2,59 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[][] plans) {
-        ArrayList<String> answer = new ArrayList<>();
-        // 우선순위 큐로 과제 시작하는 순서대로 일단 정리
-        PriorityQueue<String[]> pq = new PriorityQueue<>((a, b) -> {
-            return a[1].compareTo(b[1]);
-        });
+        int len = plans.length;
+        String[] answer = new String[len];
+        Arrays.sort(plans, (a, b) -> (a[1].compareTo(b[1])));
         
-        for(String[] plan : plans){pq.offer(plan);}
-        
-        // 이름, 남은 시간
+        // 잠시 멈출것들 모으기 여긴 
+        // 이름이랑 남는 시간만 쓰면 됨
         Stack<String[]> stack = new Stack<>();
+        // 작업 순서대로 시작
+        Queue<String[]> q = new LinkedList<>();
         
-        while(!pq.isEmpty()){
-            String[] now = pq.poll();
-            String name = now[0];
-            int start = toMin(now[1]);
-            int time = Integer.parseInt(now[2]);
+        for(int i = 0; i < len; i++) q.offer(plans[i]);
+        int idx = 0;
+        while(!q.isEmpty()){
+            String[] plan = q.poll();
+            int start = min(plan[1]);
+            int time = Integer.parseInt(plan[2]);
             
-            int nextStart = pq.isEmpty() ? Integer.MAX_VALUE : toMin(pq.peek()[1]);
+            int nextStart = q.isEmpty() ? Integer.MAX_VALUE : min(q.peek()[1]);
             int gap = nextStart - start;
             
-            // 과제하는 시간 + 시작시간이 다음 시작보다 빠르면
-            if (time <= gap){
-                // 과제 끝나는 거니까 일단 완료한거에 넣고
-                // 남은 시간동안 stack에 있는거 꺼내서 얼만큼 할 수 있는지
-                answer.add(name);
+            // 바로 다음 작업보다 빨리 끝나면 종료!
+            // 그리고 스택에 만약에 남아있는게 있다면
+            if(time <= gap){
+                answer[idx] = plan[0];
+                idx++;
                 int remain = gap - time;
                 
+                // 남는 시간동안 끝낼 수 멈춰놨던거 실행
                 while(!stack.isEmpty() && remain > 0){
-                    String[] s = stack.pop();
-                    int sTime = Integer.parseInt(s[1]);
-                    
-                    // 남은시간 동안 할 수 있으면
-                    if (sTime <= remain){
-                        answer.add(s[0]);
+                    String[] stop = stack.pop();
+                    int sTime = Integer.parseInt(stop[1]);
+                     
+                    if(sTime <= remain){
+                        answer[idx] = stop[0];
+                        idx++;
                         remain -= sTime;
                     }
-                    // 남는 시간 동안 못끝내면 일단 한거는 빼고 다시 stack에 넣기
                     else{
-                        s[1] = String.valueOf(sTime - remain);
-                        stack.push(s);
+                        stop[1] = String.valueOf(sTime - remain);
+                        stack.push(stop);
                         remain = 0;
                     }
                 }
             }
             else{
-                stack.push(new String[]{name, String.valueOf(time - gap)});
+                stack.push(new String[]{plan[0], String.valueOf(time - gap)});
             }
         }
-        
-        return answer.toArray(new String[0]);
+        return answer;
     }
     
-    public int toMin(String time){
-        String[] t = time.split(":");
-        int h = Integer.parseInt(t[0]);
-        int m = Integer.parseInt(t[1]);
-        return h * 60 + m;
+    int min (String s){
+        String[] arr = s.split(":");
+        return Integer.parseInt(arr[0]) * 60 + Integer.parseInt(arr[1]);
     }
 }
