@@ -20,7 +20,7 @@ class Solution {
         q.offer(new int[]{start[0], start[1], 0});
         
         boolean [][] v = new boolean[xLen][yLen];
-        v[start[0]][start[1]] = false;
+        v[start[0]][start[1]] = true;
         
         int[][] d = {{0,1}, {0,-1}, {1,0}, {-1,0}};
         while(!q.isEmpty()){
