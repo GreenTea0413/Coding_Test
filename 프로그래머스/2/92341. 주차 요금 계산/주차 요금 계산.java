@@ -2,51 +2,55 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        Map<String, Integer> time = new HashMap<>();
+        List<Integer> answer = new ArrayList<>();
+        Map<String, Integer> inout = new HashMap<>();
         Map<String, Integer> total = new HashMap<>();
         
-        for(int i = 0; i < records.length; i++){
-            String[] s = records[i].split(" ");
-            // 시간, 차번호, 타입
-            int t = toNum(s[0]);
+        for(String r : records){
+            String[] arr = r.split(" ");
+            int time = min(arr[0]);
+            String car = arr[1];
+            String type = arr[2];
             
-            if(s[2].equals("IN")) time.put(s[1], t);
-            else {
-                total.put(s[1], total.getOrDefault(s[1], 0) + t - time.get(s[1]));
-                time.remove(s[1]);
+            if(type.equals("IN")) inout.put(car, time);
+            else{
+                int out = time - inout.get(car);
+                total.put(car, total.getOrDefault(car, 0) + out);
+                inout.remove(car);
+            }
+        }
+        // 만약에 IN하고 안나가면 23:59에서 총 시간에 넣기
+        if(inout.size() > 0){
+            for(String key : inout.keySet()){
+                int end = min("23:59") - inout.get(key);
+                total.put(key, total.getOrDefault(key, 0) + end);
             }
         }
         
-        if(time.size() >= 1){
-            for(Map.Entry<String, Integer> ent : time.entrySet()){
-                String key = ent.getKey();
-                int value = ent.getValue();
-                total.put(key, total.getOrDefault(key, 0) + toNum("23:59") - value);
-            }
-        }
-                          
-                          
-        int[] answer = new int[total.size()];
+        // 이제 total에 차 번호에 따른 모든걸 넣었다면??
+        // 5000 + ⌈(334 - 180) / 10⌉ x 600 = 14600
+        // 시간을 구해야하고 차량 번호가 작은 자동차부터 한다고 하네요
         List<String> keyList = new ArrayList<>(total.keySet());
-        Collections.sort(keyList, (a, b) -> a.compareTo(b));
+        keyList.sort((a, b) -> (a.compareTo(b)));
         
-        int idx = 0;
         for(String k : keyList){
-            int value = total.get(k);
-            System.out.print(value);
-            if((value - fees[0]) >= 0) {
-                int f = (value - fees[0]) / fees[2];
-                if((value - fees[0]) % fees[2] > 0) f++;
-                answer[idx++] = fees[1] + f * fees[3];
+            int time = total.get(k);
+
+            // 단위 시간에 따라 올림 해야하는지 안해야하는지
+            if((time - fees[0]) <= 0) answer.add(fees[1]);
+            else{
+                int t = (time - fees[0]) / fees[2];
+                if((time - fees[0]) % fees[2] > 0) t++;
+            
+                answer.add(fees[1] + t * fees[3]);
             }
-            else answer[idx++] += fees[1];
         }
-                
-        return answer;
+        
+        return answer.stream().mapToInt(i -> i).toArray();
     }
     
-    int toNum(String time){
-        String[] s = time.split(":");
-        return Integer.parseInt(s[0]) * 60 + Integer.parseInt(s[1]);
+    int min(String s){
+        String[] arr = s.split(":");
+        return Integer.parseInt(arr[0]) * 60 + Integer.parseInt(arr[1]);
     }
 }
