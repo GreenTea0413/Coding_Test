@@ -3,39 +3,37 @@ import java.util.*;
 class Solution {
     public int solution(int[] order) {
         int answer = 0;
-        
-        // 메인 컨테이너는 무조건 앞에서부터 꺼내기 (1부터 시작이고 값이 다르면 다 보조로 감)
-        // 보조 컨테이너는 스택방식
-        int len = order.length;
-        Queue<Integer> q = new LinkedList<>(); for(int i = 0; i < len; i++) q.offer(i + 1);
+        Queue<Integer> q = new LinkedList<>();
         Stack<Integer> stack = new Stack<>();
+        int len = order.length;
+            
+        for(int i = 1; i <= len; i++) q.offer(i);
         
+        // 중간에 한번이라도 스택이랑 큐에서 둘다 못찾으면 바로 아웃!
         for(int o : order){
             boolean check = false;
-            // 우선 보조에서 먼저 찾는다고 함
             if(!stack.isEmpty() && stack.peek() == o){
                 stack.pop();
-                answer++; 
+                answer++;
                 check = true;
             }
-            // 그 다음 보조에서 없으면 메인에서 꺼내서 비교
             else{
                 while(!q.isEmpty()){
-                    int now = q.poll();
-                    if(now == o) {
+                    int n = q.poll();
+                    
+                    if(n == o) {
                         answer++;
                         check = true;
                         break;
                     }
-                    else {
-                        stack.push(now);
+                    
+                    else{
+                        stack.push(n);
                     }
                 }
             }
-            
             if(!check) break;
         }
-        
         return answer;
     }
 }
