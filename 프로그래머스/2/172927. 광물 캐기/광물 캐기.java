@@ -1,44 +1,39 @@
 class Solution {
     int answer = Integer.MAX_VALUE;
     public int solution(int[] picks, String[] minerals) {
+        // 시작점, 합
         mine(picks, minerals, 0, 0);
-        
         return answer;
     }
     
-    void mine(int[] picks, String[] minerals, int now, int total){
-        if(picks[0] + picks[1] + picks[2] == 0 || now >= minerals.length){
-            answer = Math.min(answer, total); 
-            return;
+    void mine(int[] picks, String[] minerals, int start, int total){
+        if((picks[0] + picks[1] + picks[2] == 0) || start >= minerals.length){
+            answer = Math.min(total, answer); return;
         }
-        // picks 처음부터 돌려서 minerals를 하나씩 캐면됨
-        // minerals의 순서를 바꾸는건 아닌거 같
-        // i 0번째 다이아, 1번째 철, 2번째     
         
+        // 곡괭이 3 종류 중에서 1개씩 백트래킹
         for(int i = 0; i < 3; i++){
             if(picks[i] != 0){
-                int sum = 0;
-                picks[i] --;
-                int size = Math.min(now + 5, minerals.length);
+                picks[i]--;
                 
-                for(int j = now; j < size; j++){
-                    // 다이아로 캘때
-                    if(i == 0) sum++;
-                    // 철로
+                // 곡괭이 하나당 무조건 5개 이상 캐야함
+                // 근데 mineral이 마지막에 5개가 안될 수도 있으니
+                int end = Math.min(start + 5, minerals.length);
+                int sum = 0;
+                for(int j = start; j < end; j++){
+                    if(i == 0) sum ++;
                     else if(i == 1){
                         if(minerals[j].equals("diamond")) sum += 5;
-                        else sum++;
+                        else sum ++;
                     }
-                    //돌로
-                    else{
+                    else {
                         if(minerals[j].equals("diamond")) sum += 25;
                         else if(minerals[j].equals("iron")) sum += 5;
-                        else sum++;
+                        else sum ++;
                     }
                 }
-                
-                mine(picks, minerals, size, total + sum);
-                picks[i] ++;
+                mine(picks, minerals, end, total + sum);
+                picks[i]++;
             }
         }
     }
