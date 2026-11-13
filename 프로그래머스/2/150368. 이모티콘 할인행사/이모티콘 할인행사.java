@@ -1,61 +1,47 @@
 import java.util.*;
 
 class Solution {
-    List<int[]> list = new ArrayList<>();
-    
+    int[] answer = new int[]{0,0};
+    int[][] users;
+    int[] emoticons;
+    int[] discount;
     public int[] solution(int[][] users, int[] emoticons) {
-        int[] answer = new int[2];
-        int[] sales = {40, 30, 20, 10};
-        int m = emoticons.length;
-        
-        permute(sales, new ArrayList<>(), m);
-        
-        // [40, 40], [40, 30]...
-        for(int[] sale : list){
-            int sub = 0;
-            int totalMoney = 0;
-
-            // 그럼 이제 사람한테서 이 이모티콘을 살지 말지를 정해야함
-            for(int i = 0; i <users.length; i ++){
-                int buyMoney = 0;
-                
-                // 이모티콘 구매를 하는거임
-                // user가 선호하는 할인율보다 큰 애들만 구매
-                for(int j = 0; j < m; j++){
-                    if(users[i][0] <= sale[j]){
-                        buyMoney += emoticons[j] * (100 - sale[j]) / 100;
-                    }
-                }
-                // 구매한 금액이 user가 원ㅇ하는 금액보다 넘으면 구독 아니면 그냥 구독 없이 total금액만 증가
-                if (buyMoney >= users[i][1]) {sub += 1;}
-                else {totalMoney += buyMoney;}
-                
-            }
-            
-            if (sub > answer[0]) {
-                answer[0] = sub;
-                answer[1] = totalMoney;
-            }
-            else if(sub == answer[0] && totalMoney >= answer[1]){
-                answer[1] = totalMoney;
-            }
-            // System.out.printf("[구독 : %d 판매 : %d]", sub, totalMoney);
-            // System.out.println();
-        }
-        
+        this.users = users;
+        this.emoticons = emoticons;
+        this.discount = new int[]{10,20,30,40};
+        // emoticons의 할인율은 내가 정함 이모티콘 기이가 7이니까
+        // 7개 순열로 40 40 40 40 40 40... 경우의 수를 만들어서 
+        // answer[0]이 항상 먼저 비교된다음에 높아야함 // answer[0] ==이랑 만약에 같으면 판매액이 달라야함
+        dfs(0, new int[emoticons.length]);
         return answer;
     }
     
-    public void permute(int[] sales, List<Integer> cur, int end){
-        if(cur.size() == end){
-            list.add(cur.stream().mapToInt(i -> i).toArray());
+    void dfs(int depth, int[] dis){
+        if(depth == emoticons.length){
+            calculate(dis);
             return;
         }
         
         for(int i = 0; i < 4; i++){
-            cur.add(sales[i]);
-            permute(sales, cur, end);
-            cur.remove(cur.size() - 1);
+            dis[depth] = discount[i];
+            dfs(depth + 1, dis);
         }
+    }
+    
+    void calculate(int[] dis){
+        int[] arr = new int[2];
+        
+        for(int i = 0; i < users.length; i++){
+            int buy = 0;
+            for(int j = 0; j < emoticons.length; j++){
+                // 할인율이 더 크면 산다!
+                if(users[i][0] <= dis[j]) buy += (emoticons[j] * (100 - dis[j])) / 100;
+            }
+            if(buy >= users[i][1]) arr[0] ++;
+            else arr[1] += buy;
+        }
+        
+        if(arr[0] > answer[0]) answer = arr;
+        else if(arr[0] == answer[0]) answer[1] = Math.max(arr[1], answer[1]);
     }
 }
