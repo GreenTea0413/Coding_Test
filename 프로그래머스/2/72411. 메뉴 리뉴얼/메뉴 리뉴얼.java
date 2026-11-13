@@ -2,46 +2,48 @@ import java.util.*;
 
 class Solution {
     Map<String, Integer> map = new HashMap<>();
+    List<String> answer = new ArrayList<>();
     
     public String[] solution(String[] orders, int[] course) {
-        List<String> answer = new ArrayList<>();
-        
-        // 이걸로 coruse 길이에 맞는 세트들만 만듬
-        for(String ord : orders) {
-            char[] o = ord.toCharArray();
-            Arrays.sort(o);
-            
-            for(int c : course){
-                dfs(o, 0, "", c);   
+        // dfs 백트래킹으로 싹다 모아놓기
+        // course길이 만큼으로해서 o에서 뽑아낼 수 있는거 다 뽑아내고 map에서 2이상인 것들 꺼내서 배치하기!
+        for(String o : orders){
+            char[] c = o.toCharArray();
+            Arrays.sort(c);
+            for(int l : course){
+                dfs(c, l, "", 0);
             }
         }
     
-        // map에서 이제 value로 길이마다 가장 큰 값 찾기 course랑 같은 애들만 answer에 담기
-        Map<Integer, Integer> max = new HashMap<>();
+        Map<Integer, Integer> maxMap = new HashMap<>();
+        for(int c : course){
+            int max = 2;
+            for(Map.Entry<String, Integer> entry : map.entrySet()){
+                if(c == entry.getKey().length()) max = Math.max(max, entry.getValue());
+            }
+            maxMap.put(c, max);
+        }
         
-        // 이러면 이제 2개 이상 팔린 것 중에서 길이에 대해 최대값들을 넣음
-        for(String key : map.keySet()){
-            if(map.get(key) >= 2) {
-                max.put(key.length(), Math.max(max.getOrDefault(key.length(), 0), map.get(key)));
+        for(Map.Entry<Integer, Integer> m : maxMap.entrySet()){
+            for(Map.Entry<String, Integer> entry : map.entrySet()){
+                if(m.getKey() == entry.getKey().length() && m.getValue() == entry.getValue()){
+                    answer.add(entry.getKey());
+                } 
             }
         }
         
-        for(String key : map.keySet()){
-            int len = key.length();
-            int count = map.get(key);
-            
-            if(count >= 2 && max.get(len) == count) answer.add(key);
-        }
-        
-        Collections.sort(answer);
+        answer.sort((a, b) -> a.compareTo(b));
         return answer.toArray(new String[0]);
     }
-    void dfs(char[] c, int start, String now, int depth){
-        if(depth == 0) {
+    
+    void dfs(char[] order, int len, String now, int start){
+        if(now.length() == len){
             map.put(now, map.getOrDefault(now, 0) + 1);
             return;
         }
         
-        for(int i = start; i < c.length; i++) dfs(c, i + 1, now + c[i], depth - 1);
+        for(int i = start; i < order.length; i++){
+            dfs(order, len, now + order[i], i + 1);
+        }
     }
 }
