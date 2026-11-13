@@ -1,22 +1,46 @@
 import java.util.*;
 
 class Solution {
-    int answer = -1;
+    int answer = 0;
+    int len;
     public int solution(int k, int[][] dungeons) {
-        int len = dungeons.length;
-        dfs(k, 0, len, new boolean[len], dungeons);
+        len = dungeons.length;
+        dfs(k, dungeons, new boolean[len], new ArrayList<>());
         return answer;
     }
     
-    void dfs(int k, int depth, int len, boolean[] v, int[][] dungeons){
-        answer = Math.max(answer, depth);
+    void dfs(int k, int[][] dungeons, boolean[] v, List<Integer> path){
+        if(path.size() == len){
+            answer = Math.max(answer, adventure(path, dungeons, k));
+            return;
+        }
         
         for(int i = 0; i < len; i++){
-            if(!v[i] && dungeons[i][0] <= k){
+            if(!v[i]){
                 v[i] = true;
-                dfs(k - dungeons[i][1], depth + 1, len, v, dungeons);
+                path.add(i);
+                
+                dfs(k, dungeons, v, path);
+                
+                path.remove(Integer.valueOf(i));
                 v[i] = false;
             }
         }
+    }
+    
+    int adventure(List<Integer> path, int[][] dungeons, int k){
+        int count = 0;
+        for(int p : path){
+            int[] now = dungeons[p];
+            if(k >= now[0]) {
+                k -= now[1];
+                if(k >= 0){
+                    count ++;    
+                }
+                else break;
+            }
+        }
+        
+        return count;
     }
 }
